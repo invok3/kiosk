@@ -22,6 +22,7 @@ export default function MenuLayout({
         <div className="w-full flex justify-center">
           <Link
             href="/order"
+            prefetch={false}
             className={`w-full max-w-[50vh] py-4 text-cream-100 text-lg font-bold rounded-2xl shadow-lg active:scale-[0.98] transition-all text-center block cursor-pointer ${
               itemCount > 0
                 ? "bg-coffee-800 hover:bg-coffee-900"

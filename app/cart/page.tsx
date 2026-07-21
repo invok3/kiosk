@@ -7,7 +7,7 @@ export default function CartPage() {
     const { cart, removeFromCart, totalAmount, clearCart } = useCart();
 
     return (
-        <div className="min-h-screen flex justify-center items-center bg-cream-100">
+        <div className="min-h-screen flex justify-center items-center">
             <div className="w-full flex flex-col landscape:w-[50vh] h-screen bg-cream-100 p-4">
 
                 {/* Header */}
@@ -15,6 +15,7 @@ export default function CartPage() {
                     <div className="flex items-center gap-3">
                         <Link
                             href="/menu"
+                            prefetch={false}
                             className="text-coffee-800 p-1 hover:opacity-80 transition-opacity"
                             aria-label="العودة للقائمة"
                         >
@@ -119,6 +120,7 @@ export default function CartPage() {
                     {cart.length > 0 ? (
                         <Link
                             href="/order"
+                            prefetch={false}
                             className="w-full max-w-[50vh] py-4 text-cream-100 text-lg font-bold rounded-2xl shadow-lg active:scale-[0.98] transition-all text-center block cursor-pointer bg-coffee-800 hover:bg-coffee-900"
                         >
                             إكمال الطلب
@@ -126,6 +128,7 @@ export default function CartPage() {
                     ) : (
                         <Link
                             href="/menu"
+                            prefetch={false}
                             className="w-full max-w-[50vh] py-4 bg-coffee-800 text-cream-100 text-lg font-bold rounded-2xl shadow-lg active:scale-[0.98] transition-transform text-center block cursor-pointer"
                         >
                             العودة للقائمة

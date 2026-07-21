@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <main className="min-h-screen flex justify-center items-center">
-      <div 
+      <div
         className="w-full landscape:w-[50vh] min-h-screen max-h-screen overflow-hidden bg-cream-100 p-6 grid grid-rows-[1fr_auto_auto_2fr_auto_1fr]"
       >
         {/* 1st Row: Top Spacer */}
@@ -31,7 +31,8 @@ export default function NotFound() {
 
         {/* 6th Row: Home Navigation Link */}
         <div className="w-full flex justify-center px-4">
-          <Link 
+          <Link
+            prefetch={false}
             href="/"
             className="w-full max-w-[50vh] py-4 bg-coffee-800 text-cream-100 text-lg font-bold rounded-2xl shadow-lg active:scale-[0.98] transition-transform text-center block cursor-pointer"
           >

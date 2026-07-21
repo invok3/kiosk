@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
+
+const basePath = process.env.NODE_ENV === 'production' ? '/coffee_end_prototype' : '';
+
 export default function Home() {
   return (
     <main className="min-h-screen flex justify-center items-center">
@@ -13,7 +16,7 @@ export default function Home() {
         <div className="px-4 flex justify-center items-center">
           <div className="relative w-full aspect-square max-h-[50vh] max-w-[50vh] flex items-center justify-center">
             <Image
-              src="/coffee.png"
+              src={`${basePath}/coffee.png`}
               alt="كويك ستوب - Quick Stop"
               sizes="512"
               fill
@@ -40,6 +43,7 @@ export default function Home() {
         <div className="w-full flex justify-center">
           <Link
             href="/menu"
+            prefetch={false}
             className="w-full max-w-[50vh] py-4 bg-coffee-800 text-cream-100 text-lg font-bold rounded-2xl shadow-lg active:scale-[0.98] transition-transform text-center block cursor-pointer">
             أطلب الان
           </Link>

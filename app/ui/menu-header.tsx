@@ -17,6 +17,7 @@ export default function MenuHeader({
             {/* 1. Start: Cart Icon with Badge */}
             <Link
                 href="/cart"
+                prefetch={false}
                 className="relative p-2.5 bg-cream-200 rounded-full text-coffee-800 hover:bg-cream-300 active:scale-95 transition-all"
                 aria-label="السلة"
             >

@@ -22,24 +22,72 @@ export default function OrderPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customer.name || !customer.phone) return;
-    if (orderType === "delivery" && !customer.address) return;
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!customer.name || !customer.phone) return;
+  //   if (orderType === "delivery" && !customer.address) return;
 
-    setIsSubmitting(true);
+  //   setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
+  //   setTimeout(() => {
+  //     setIsSubmitting(false);
+  //     setIsSubmitted(true);
+  //     clearCart();
+  //   }, 1000);
+  // };
+
+      // Your WhatsApp phone number in international format without '+' or spaces (e.g., 972... or 970...)
+    const SHOP_PHONE_NUMBER = "972595202527";
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!customer.name || !customer.phone) return;
+      if (orderType === "delivery" && !customer.address) return;
+
+      setIsSubmitting(true);
+
+      // 1. Format order items list
+      const itemsList = cart
+        .map(
+          (item) =>
+            `• ${item.name} (${item.quantity}x) - ${(item.price * item.quantity).toFixed(2)} ₪`
+        )
+        .join("\n");
+
+      // 2. Build structured WhatsApp message text
+      const message = `*طلب جديد - قهوة vintage*
+--------------------------------
+*نوع الطلب:* ${orderType === "pickup" ? "استلام من الفرع" : "توصيل"}
+
+*بيانات الزبون:*
+• *الاسم:* ${customer.name}
+• *الهاتف:* ${customer.phone}
+${orderType === "delivery" ? `• *العنوان:* ${customer.address}\n` : ""}${customer.notes ? `• *ملاحظات:* ${customer.notes}\n` : ""
+        }
+--------------------------------
+*تفاصيل الطلب:*
+${itemsList}
+
+--------------------------------
+*المجموع الكلي:* ${totalAmount.toFixed(2)} ₪`;
+
+      // 3. Create encoded wa.me URL
+      const whatsappUrl = `https://wa.me/${SHOP_PHONE_NUMBER}?text=${encodeURIComponent(
+        message
+      )}`;
+
+      // 4. Clear cart & redirect to WhatsApp
       clearCart();
-    }, 1000);
-  };
+      setIsSubmitting(false);
+
+      // Open directly in browser/app
+      window.location.href = whatsappUrl;
+    };
 
   // 2. Early return comes strictly AFTER hooks initialization
   if (isSubmitted) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-cream-100">
+      <div className="min-h-screen flex justify-center items-center">
         <div className="w-full flex flex-col landscape:w-[50vh] h-screen bg-cream-100 p-6 justify-center items-center text-center">
           <div className="border border-coffee-800 p-6 rounded-2xl w-full max-w-xs space-y-3">
             <h1 className="text-2xl font-bold text-coffee-900 border-b border-coffee-800/20 pb-3">
@@ -55,6 +103,7 @@ export default function OrderPage() {
           </div>
           <Link
             href="/menu"
+            prefetch={false}
             className="w-full max-w-xs mt-6 py-4 bg-coffee-800 text-cream-100 font-bold rounded-2xl shadow-sm text-center block"
           >
             العودة للقائمة
@@ -65,9 +114,9 @@ export default function OrderPage() {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-cream-100">
-      <div className="w-full flex flex-col landscape:w-[50vh] h-screen bg-cream-100 p-4">
-        
+    <div className="min-h-screen flex justify-center items-center">
+      <div className="w-full flex flex-col landscape:w-[50vh] min-h-screen bg-cream-100 p-4">
+
         {/* Header */}
         <header className="flex items-center gap-3 py-3 border-b border-coffee-800/20">
           <button
@@ -96,30 +145,28 @@ export default function OrderPage() {
         </header>
 
         {/* Form Body */}
-        <main className="flex-1 overflow-y-auto my-2 py-2">
+        <main className="flex-1 my-2 py-2">
           <form id="order-form" onSubmit={handleSubmit} className="space-y-5">
-            
+
             {/* Minimalist Toggle Switch */}
             <div className="border border-coffee-800/30 p-1 rounded-2xl flex text-sm font-bold bg-cream-100">
               <button
                 type="button"
                 onClick={() => setOrderType("pickup")}
-                className={`flex-1 py-3 rounded-xl transition-all ${
-                  orderType === "pickup"
+                className={`flex-1 py-3 rounded-xl transition-all ${orderType === "pickup"
                     ? "bg-coffee-800 text-cream-100"
                     : "text-coffee-900/70 hover:text-coffee-900"
-                }`}
+                  }`}
               >
                 استلام من الفرع
               </button>
               <button
                 type="button"
                 onClick={() => setOrderType("delivery")}
-                className={`flex-1 py-3 rounded-xl transition-all ${
-                  orderType === "delivery"
+                className={`flex-1 py-3 rounded-xl transition-all ${orderType === "delivery"
                     ? "bg-coffee-800 text-cream-100"
                     : "text-coffee-900/70 hover:text-coffee-900"
-                }`}
+                  }`}
               >
                 توصيل
               </button>
