@@ -1,6 +1,6 @@
 import { CartProvider } from "@/app/context/cart-context";
 
-export default function MyAppLayout({
+export default function CustomerLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
