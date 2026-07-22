@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Tajawal, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { CartProvider, useCart } from "@/app/context/cart-context";
 
 const tajawal = Tajawal({
   subsets: ["arabic", "latin"],
@@ -31,7 +30,7 @@ export default function RootLayout({
       className={`${tajawal.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <CartProvider>{children}</CartProvider>
+        {children}
       </body>
     </html>
   );

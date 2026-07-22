@@ -5,6 +5,8 @@ import CategoryAccordion from "@/app/ui/category-accordion";
 import ProductOptionModal from "@/app/ui/product-option-modal";
 import { Product } from "@/app/types/product";
 import { useCart } from "@/app/context/cart-context";
+import MenuHeader from "@/app/ui/menu-header";
+import Link from "next/link";
 
 export const MOCK_CATEGORIES = [
   {
@@ -66,7 +68,7 @@ export default function Menu() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // Consume global cart dispatch
-  const { addToCart } = useCart();
+  const { addToCart, totalAmount, itemCount } = useCart();
 
   const handleToggle = (categoryId: string) => {
     setOpenCategoryId((prev) => (prev === categoryId ? null : categoryId));
@@ -77,6 +79,13 @@ export default function Menu() {
   };
 
   return (
+    <div className="min-h-screen flex justify-center items-center">
+          <div className="w-full flex flex-col landscape:w-[50vh] h-screen bg-cream-100 p-4">
+            {/* Header receives live calculations directly from Root Context */}
+            <MenuHeader totalAmount={totalAmount} itemCount={itemCount} />
+    
+            <main className="flex-1 overflow-y-auto my-2">
+
     <div className="py-2">
       <h2 className="text-xl font-bold text-coffee-900 mb-4 px-1">القائمة</h2>
 
@@ -99,6 +108,23 @@ export default function Menu() {
           onAddToCart={addToCart}
         />
       )}
+    </div>
+    </main>
+
+        <div className="w-full flex justify-center">
+          <Link
+            href="/order"
+            prefetch={false}
+            className={`w-full max-w-[50vh] py-4 text-cream-100 text-lg font-bold rounded-2xl shadow-lg active:scale-[0.98] transition-all text-center block cursor-pointer ${
+              itemCount > 0
+                ? "bg-coffee-800 hover:bg-coffee-900"
+                : "bg-coffee-800/50 pointer-events-none opacity-60"
+            }`}
+          >
+            إكمال الطلب {itemCount > 0 ? `(${totalAmount.toFixed(2)} ₪)` : ""}
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
