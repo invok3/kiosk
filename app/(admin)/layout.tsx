@@ -1,4 +1,4 @@
-import AuthProvider from "@/app/context/auth-provider";
+import { DashboardProviders } from "@/app/context/dashboard-providers";
 
 
 export default function AdminLayout({
@@ -7,11 +7,11 @@ export default function AdminLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <AuthProvider>
+        <DashboardProviders>
             <div className="bg-white h-screen w-screen text-black">
                 {children}
             </div>
-        </AuthProvider>
+        </DashboardProviders>
     );
 }
 

@@ -59,7 +59,7 @@ app/
     ├── layout.tsx                # Wraps in AuthProvider, white bg, full screen
     ├── login/page.tsx            # Login form (stub)
     └── dashboard/
-        ├── layout.tsx            # Sidebar nav + header, auth guard (commented out)
+        ├── layout.tsx            # Sidebar nav + header, save button, auth guard (commented out)
         ├── page.tsx              # Dashboard home (placeholder)
         ├── categories/page.tsx   # Category CRUD (imports shared data, modal-based)
         ├── products/page.tsx     # Products page (placeholder)
@@ -92,7 +92,7 @@ app/
 ### Data Flow
 - **Cart**: Global context (`CartContext`) provided at the `(customer)` layout level. Cart items are `CartProduct` objects with unique IDs generated via `Date.now()`.
 - **Product options**: Products can have `options` array with `radio` (single choice) or `checkbox` (toggle) types. Extra prices are calculated in `cartProductFrom()`.
-- **Mock data**: `CATEGORIES` is defined in `app/data/menu.ts` and shared across customer and admin. Admin derives `count` from `products.length`. Will be replaced by Firebase snapshot later.
+- **Mock data**: `MENU` is defined in `app/data/menu.ts` as `{ categories: [...], edited: false }`. Shared across customer and admin. Admin derives `count` from `products.length`. Will be replaced by Firebase snapshot later.
 
 ### Order Submission
 - Orders are submitted via **WhatsApp URL** (`https://wa.me/{phone}?text={encoded_message}`).

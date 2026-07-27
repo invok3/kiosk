@@ -4,10 +4,10 @@ import { useState } from "react";
 import CategoryAccordion from "@/app/ui/category-accordion";
 import ProductOptionModal from "@/app/ui/product-option-modal";
 import { Product } from "@/app/types/product";
-import { useCart } from "@/app/context/cart-context";
+import { useCart } from "@/app/context/providers/cart-context";
 import MenuHeader from "@/app/ui/menu-header";
 import Link from "next/link";
-import { CATEGORIES } from "@/app/data/menu";
+import { MENU } from "@/app/data/menu";
 
 export default function Menu() {
   const [openCategoryId, setOpenCategoryId] = useState<string | null>(null);
@@ -35,7 +35,7 @@ export default function Menu() {
     <div className="py-2">
       <h2 className="text-xl font-bold text-coffee-900 mb-4 px-1">القائمة</h2>
 
-      {CATEGORIES.map((category) => (
+      {MENU.categories.map((category) => (
         <CategoryAccordion
           key={category.id}
           title={category.title}

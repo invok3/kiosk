@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/app/context/auth-provider";
+import { useAuth } from "@/app/context/providers/auth-provider";
 
 export default function DashboardLayout({
   children,
@@ -53,6 +53,15 @@ export default function DashboardLayout({
 
           {/* Actions */}
           <div className="flex items-center gap-4">
+            <button
+              onClick={() => {
+                // Firebase push logic will hook in here later
+                console.log("Saving menu to Firebase...");
+              }}
+              className="bg-stone-900 text-white text-xs font-semibold px-4 py-2 rounded-md hover:bg-stone-800 transition-colors cursor-pointer"
+            >
+              حفظ
+            </button>
             <button
               onClick={() => {
                 // Firebase signOut logic will hook in here later

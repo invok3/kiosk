@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { Category } from "@/app/types/category";
-import { CATEGORIES } from "@/app/data/menu";
+import { MENU } from "@/app/data/menu";
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>(CATEGORIES);
+  const [categories, setCategories] = useState<Category[]>(MENU.categories);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
