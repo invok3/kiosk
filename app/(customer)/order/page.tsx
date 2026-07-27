@@ -48,10 +48,23 @@ export default function OrderPage() {
 
       // 1. Format order items list
       const itemsList = cart
-        .map(
-          (item) =>
-            `• ${item.name} (${item.quantity}x) - ${(item.price * item.quantity).toFixed(2)} ₪`
-        )
+        .map((item) => {
+          let line = `• ${item.name} (${item.quantity}x) - ${(item.price * item.quantity).toFixed(2)} ₪`;
+          if (item.options && item.options.length > 0) {
+            const optionsList = item.options
+              .map((opt) => {
+                const extra = opt.extraPrice ?? 0;
+                const priceStr = extra > 0 ? ` (+${extra.toFixed(2)} ₪)` : "";
+                return `    ◦ ${opt.name}${priceStr}`;
+              })
+              .join("\n");
+            line += "\n" + optionsList;
+          }
+          if (item.note) {
+            line += `\n    ملاحظة: ${item.note}`;
+          }
+          return line;
+        })
         .join("\n");
 
       // 2. Build structured WhatsApp message text

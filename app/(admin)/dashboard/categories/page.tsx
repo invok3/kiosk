@@ -1,15 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Category } from "@/app/types/category";
 import { useData } from "@/app/context/providers/data-provider";
+import { useSearchFilter } from "@/app/hooks/use-search-filter";
+import AdminSearchBar from "@/app/ui/admin-search-bar";
 
 export default function CategoriesPage() {
   const { categories, addCategory, updateCategory, deleteCategory } = useData();
+  const { searchInput, setSearchInput, filterValue } = useSearchFilter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [formData, setFormData] = useState({ id: "", title: "" });
+
+  const filteredCategories = useMemo(() => {
+    if (!filterValue) return categories;
+    const term = filterValue.toLowerCase();
+    return categories.filter(
+      (cat) =>
+        cat.title.toLowerCase().includes(term) ||
+        cat.id.toLowerCase().includes(term) ||
+        cat.products.some((p) => p.name.toLowerCase().includes(term)),
+    );
+  }, [categories, filterValue]);
 
   const handleOpenAdd = () => {
     setEditingCategory(null);
@@ -52,9 +66,7 @@ export default function CategoriesPage() {
     <div className="h-full p-8 flex flex-col gap-6">
       {/* 1. Action Bar (Header) - Fixed height */}
       <div className="flex items-center justify-between pb-4 border-b border-stone-200 shrink-0">
-        <p className="text-sm text-stone-500">
-          إدارة تصنيفات القائمة والرموز التعريفية
-        </p>
+        <AdminSearchBar value={searchInput} onChange={setSearchInput} />
 
         <button
           onClick={handleOpenAdd}
@@ -78,7 +90,7 @@ export default function CategoriesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100">
-              {categories.map((cat) => (
+              {filteredCategories.map((cat) => (
                 <tr key={cat.id} className="hover:bg-stone-50/50 transition-colors">
                   <td className="py-4 px-6 font-semibold text-stone-900">{cat.title}</td>
                   <td className="py-4 px-6 text-stone-500 font-mono text-xs">{cat.id}</td>
@@ -110,7 +122,7 @@ export default function CategoriesPage() {
                 </tr>
               ))}
 
-              {categories.length === 0 && (
+              {filteredCategories.length === 0 && (
                 <tr>
                   <td colSpan={4} className="py-12 text-center text-stone-400 text-xs">
                     لا توجد أصناف حالياً

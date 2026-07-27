@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Product } from "@/app/types/product";
 import { ProductOption, OptionChoice } from "@/app/types/option";
 import { useData } from "@/app/context/providers/data-provider";
+import { useSearchFilter } from "@/app/hooks/use-search-filter";
+import AdminSearchBar from "@/app/ui/admin-search-bar";
 
 function shortId() {
   return Math.random().toString(36).slice(2, 10);
@@ -11,6 +14,22 @@ function shortId() {
 
 export default function ProductsPage() {
   const { categories, products, addProduct, updateProduct, deleteProduct } = useData();
+  const { searchInput, setSearchInput, filterValue } = useSearchFilter();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const categoryFilter = searchParams.get("categoryid") ?? "";
+
+  const handleCategoryChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set("categoryid", value);
+    } else {
+      params.delete("categoryid");
+    }
+    router.replace(`${pathname}?${params.toString()}`);
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<(Product & { categoryId: string }) | null>(null);
@@ -44,6 +63,23 @@ export default function ProductsPage() {
   const handleDelete = (product: Product & { categoryId: string }) => {
     deleteProduct(product.id, product.categoryId);
   };
+
+  const filteredProducts = useMemo(() => {
+    let result = products;
+    if (categoryFilter) {
+      result = result.filter((p) => p.categoryId === categoryFilter);
+    }
+    if (filterValue) {
+      const term = filterValue.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(term) ||
+          p.id.toLowerCase().includes(term) ||
+          p.categoryTitle.toLowerCase().includes(term),
+      );
+    }
+    return result;
+  }, [products, categoryFilter, filterValue]);
 
   const handleAddOption = () => {
     setOptions((prev) => [
@@ -148,9 +184,19 @@ export default function ProductsPage() {
     <div className="h-full p-8 flex flex-col gap-6">
       {/* 1. Action Bar (Header) - Fixed height */}
       <div className="flex items-center justify-between pb-4 border-b border-stone-200 shrink-0">
-        <p className="text-sm text-stone-500">
-          إدارة منتجات القائمة وأسعارها
-        </p>
+        <div className="flex items-center gap-3">
+          <AdminSearchBar value={searchInput} onChange={setSearchInput} />
+          <select
+            value={categoryFilter}
+            onChange={(e) => handleCategoryChange(e.target.value)}
+            className="bg-white border border-stone-200 rounded-md px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-stone-900 transition-colors"
+          >
+            <option value="">الكل</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>{cat.title}</option>
+            ))}
+          </select>
+        </div>
 
         <button
           onClick={handleOpenAdd}
@@ -176,7 +222,7 @@ export default function ProductsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100">
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <tr key={`${product.categoryId}-${product.id}`} className="hover:bg-stone-50/50 transition-colors">
                   <td className="py-4 px-6 font-semibold text-stone-900">{product.name}</td>
                   <td className="py-4 px-6 text-stone-500 font-mono text-xs">{product.id}</td>
@@ -210,7 +256,7 @@ export default function ProductsPage() {
                 </tr>
               ))}
 
-              {products.length === 0 && (
+              {filteredProducts.length === 0 && (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-stone-400 text-xs">
                     لا توجد منتجات حالياً
