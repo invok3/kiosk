@@ -39,7 +39,7 @@ export default function OrderPage() {
       // Your WhatsApp phone number in international format without '+' or spaces (e.g., 972... or 970...)
     const SHOP_PHONE_NUMBER = "972595202527";
 
-    const handleSubmit = (e: React.FormEvent) => {
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (!customer.name || !customer.phone) return;
       if (orderType === "delivery" && !customer.address) return;

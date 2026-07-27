@@ -12,7 +12,7 @@ export interface CartProduct {
     name: string;
     price: number;
     quantity: number;
-    options?: ProductOption[];
+    options?: (ProductOption | OptionChoice)[];
     total: number;
     note?: string;
 }

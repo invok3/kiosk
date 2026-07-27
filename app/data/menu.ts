@@ -13,7 +13,7 @@ export const MENU = {
           options: [
             {
               id: "milk_type",
-              title: "نوع الحليب",
+              name: "نوع الحليب",
               type: "radio",
               required: true,
               choices: [
@@ -24,13 +24,13 @@ export const MENU = {
             },
             {
               id: "extra_hot",
-              title: "ساخن جداً",
+              name: "ساخن جداً",
               type: "checkbox",
               extraPrice: 0,
             },
             {
               id: "extra_shot",
-              title: "جرعة إضافية (Extra Shot)",
+              name: "جرعة إضافية (Extra Shot)",
               type: "checkbox",
               extraPrice: 4.0,
             },

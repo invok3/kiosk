@@ -84,7 +84,7 @@ export default function ProductsPage() {
   const handleAddOption = () => {
     setOptions((prev) => [
       ...prev,
-      { id: shortId(), title: "", type: "checkbox", extraPrice: 0 },
+      { id: shortId(), name: "", type: "checkbox", extraPrice: 0 },
     ]);
   };
 
@@ -151,7 +151,7 @@ export default function ProductsPage() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.price.trim() || !formData.categoryId) return;
 
@@ -369,8 +369,8 @@ export default function ProductsPage() {
                               type="text"
                               required
                               placeholder="اسم الخيار (مثال: نوع الحليب)"
-                              value={opt.title}
-                              onChange={(e) => handleOptionChange(opt.id, { title: e.target.value })}
+                              value={opt.name}
+                              onChange={(e) => handleOptionChange(opt.id, { name: e.target.value })}
                               className="w-full bg-white border border-stone-200 rounded-md px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-stone-900 transition-colors"
                             />
                             <div className="flex items-center gap-1">
