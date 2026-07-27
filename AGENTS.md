@@ -38,7 +38,10 @@ app/
 ├── globals.css                   # Tailwind import + custom color tokens
 ├── favicon.ico
 ├── types/
-│   └── product.ts                # Product, CartProduct interfaces + cartProductFrom() factory
+│   ├── product.ts                # Product, CartProduct interfaces + cartProductFrom() factory
+│   └── category.ts              # Category interface
+├── data/
+│   └── menu.ts                  # Shared mock categories+products (Firebase snapshot placeholder)
 ├── context/
 │   ├── cart-context.tsx          # Global cart state (CartProvider, useCart)
 │   └── auth-provider.tsx         # Stub auth context (AuthProvider, useAuth) — Firebase later
@@ -49,7 +52,7 @@ app/
 │   └── product-option-modal.tsx  # Modal for product options, quantity, notes
 ├── (customer)/                   # Customer-facing routes (mobile)
 │   ├── layout.tsx                # Wraps in CartProvider
-│   ├── menu/page.tsx             # Menu with mocked categories/products
+│   ├── menu/page.tsx             # Menu with mocked categories/products (imports from data/menu)
 │   ├── cart/page.tsx             # Shopping cart view
 │   └── order/page.tsx            # Checkout form → WhatsApp redirect
 └── (admin)/                      # Admin dashboard (desktop)
@@ -58,7 +61,7 @@ app/
     └── dashboard/
         ├── layout.tsx            # Sidebar nav + header, auth guard (commented out)
         ├── page.tsx              # Dashboard home (placeholder)
-        ├── categories/page.tsx   # Category CRUD (mocked, modal-based)
+        ├── categories/page.tsx   # Category CRUD (imports shared data, modal-based)
         ├── products/page.tsx     # Products page (placeholder)
         └── orders/page.tsx       # Orders page (placeholder)
 ```
@@ -89,7 +92,7 @@ app/
 ### Data Flow
 - **Cart**: Global context (`CartContext`) provided at the `(customer)` layout level. Cart items are `CartProduct` objects with unique IDs generated via `Date.now()`.
 - **Product options**: Products can have `options` array with `radio` (single choice) or `checkbox` (toggle) types. Extra prices are calculated in `cartProductFrom()`.
-- **Mock data**: `MOCK_CATEGORIES` is defined inline in `app/(customer)/menu/page.tsx`. Admin pages use local `useState` for mock data.
+- **Mock data**: `CATEGORIES` is defined in `app/data/menu.ts` and shared across customer and admin. Admin derives `count` from `products.length`. Will be replaced by Firebase snapshot later.
 
 ### Order Submission
 - Orders are submitted via **WhatsApp URL** (`https://wa.me/{phone}?text={encoded_message}`).
