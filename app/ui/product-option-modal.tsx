@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Product, CartProduct, cartProductFrom } from "@/app/types/product";
+import { OptionChoice, ProductOption } from "@/app/types/option";
 
 interface ProductOptionModalProps {
   product: Product | null;
@@ -17,33 +18,28 @@ export default function ProductOptionModal({
   const [quantity, setQuantity] = useState(1);
   const [note, setNote] = useState("");
 
-  // Track radio selections: { "milk_type": { id: "whole_milk", name: "حليب كامل الدسم", extraPrice: 0 } }
-  const [selectedRadios, setSelectedRadios] = useState<Record<string, any>>(() => {
+  const [selectedRadios, setSelectedRadios] = useState<Record<string, OptionChoice>>(() => {
     if (!product?.options) return {};
-    const initialRadios: Record<string, any> = {};
+    const initialRadios: Record<string, OptionChoice> = {};
     
     product.options.forEach((optGroup) => {
       if (optGroup.type === "radio" && optGroup.choices?.length > 0) {
-        // Default to first choice
         initialRadios[optGroup.id] = optGroup.choices[0];
       }
     });
     return initialRadios;
   });
 
-  // Track checkbox toggles: { "extra_shot": { id: "extra_shot", name: "جرعة إضافية", extraPrice: 4.0 } }
-  const [selectedCheckboxes, setSelectedCheckboxes] = useState<Record<string, any>>({});
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState<Record<string, OptionChoice>>({});
 
-  if (!product) return null;
-
-  // Combine selected radios and active checkboxes into a flat list for `cartProductFrom`
-  const flatSelectedOptions = useMemo(() => {
+  const flatSelectedOptions: OptionChoice[] = useMemo(() => {
     const radioList = Object.values(selectedRadios);
     const checkboxList = Object.values(selectedCheckboxes);
     return [...radioList, ...checkboxList];
   }, [selectedRadios, selectedCheckboxes]);
 
-  // Dynamic price preview via single-source-of-truth factory
+  if (!product) return null;
+
   const currentTotal = cartProductFrom({
     product,
     quantity,
@@ -51,14 +47,14 @@ export default function ProductOptionModal({
     note,
   }).total;
 
-  const handleRadioSelect = (groupId: string, choice: any) => {
+  const handleRadioSelect = (groupId: string, choice: OptionChoice) => {
     setSelectedRadios((prev) => ({
       ...prev,
       [groupId]: choice,
     }));
   };
 
-  const handleCheckboxToggle = (optGroup: any) => {
+  const handleCheckboxToggle = (optGroup: ProductOption) => {
     setSelectedCheckboxes((prev) => {
       const copy = { ...prev };
       if (copy[optGroup.id]) {
@@ -67,7 +63,7 @@ export default function ProductOptionModal({
         copy[optGroup.id] = {
           id: optGroup.id,
           name: optGroup.title,
-          extraPrice: optGroup.extraPrice || 0,
+          extraPrice: optGroup.extraPrice ?? 0,
         };
       }
       return copy;
@@ -145,7 +141,7 @@ export default function ProductOptionModal({
                         {optGroup.title}
                       </label>
                       <div className="space-y-1.5">
-                        {optGroup.choices?.map((choice: any) => {
+                        {optGroup.choices?.map((choice) => {
                           const isSelected = activeChoice?.id === choice.id;
                           return (
                             <button

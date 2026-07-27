@@ -1,8 +1,10 @@
+import { OptionChoice, ProductOption } from "./option";
+
 export interface Product {
     id: string;
     name: string;
     price: number;
-    options?: Record<string, any>[];
+    options?: ProductOption[];
 }
 
 export interface CartProduct {
@@ -10,7 +12,7 @@ export interface CartProduct {
     name: string;
     price: number;
     quantity: number;
-    options?: Record<string, any>[];
+    options?: ProductOption[];
     total: number;
     note?: string;
 }
@@ -18,7 +20,7 @@ export interface CartProduct {
 interface CreateCartProductParams {
     product: Product;
     quantity?: number;
-    options?: Record<string, any>[];
+    options?: (ProductOption | OptionChoice)[];
     note?: string;
 }
 
@@ -29,7 +31,7 @@ export function cartProductFrom(params: CreateCartProductParams): CartProduct {
   const optionsExtraPrice = Array.isArray(options)
     ? options.reduce((sum, option) => {
         if (!option) return sum;
-        const extra = option.extraPrice ?? option.extraprice ?? 0;
+        const extra = option.extraPrice ?? 0;
         return sum + (typeof extra === "number" ? extra : 0);
       }, 0)
     : 0;
