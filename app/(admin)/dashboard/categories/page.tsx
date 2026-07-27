@@ -6,13 +6,14 @@ interface Category {
   id: string;
   name: string;
   label: string;
+  count: number;
 }
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([
-    { id: "1", name: "espresso", label: "إسبريسو" },
-    { id: "2", name: "drip-coffee", label: "قهوة مقطرة" },
-    { id: "3", name: "desserts", label: "حلويات" },
+    { id: "1", name: "espresso", label: "إسبريسو", count: 4 },
+    { id: "2", name: "drip-coffee", label: "قهوة مقطرة", count: 3 },
+    { id: "3", name: "desserts", label: "حلويات", count: 0 },
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,6 +53,7 @@ export default function CategoriesPage() {
         id: Date.now().toString(),
         name: formData.name.trim(),
         label: formData.label.trim(),
+        count: 0,
       };
       setCategories((prev) => [...prev, newCat]);
     }
@@ -84,6 +86,7 @@ export default function CategoriesPage() {
               <tr className="text-stone-500 text-xs font-medium">
                 <th className="py-3 px-6">المسمى (Label)</th>
                 <th className="py-3 px-6">الاسم (Name)</th>
+                <th className="py-3 px-6 text-center">المنتجات</th>
                 <th className="py-3 px-6 text-left">الإجراءات</th>
               </tr>
             </thead>
@@ -92,6 +95,15 @@ export default function CategoriesPage() {
                 <tr key={cat.id} className="hover:bg-stone-50/50 transition-colors">
                   <td className="py-4 px-6 font-semibold text-stone-900">{cat.label}</td>
                   <td className="py-4 px-6 text-stone-500 font-mono text-xs">{cat.name}</td>
+                  <td className="py-4 px-6 text-center">
+                    <span className={`inline-flex items-center justify-center min-w-[1.5rem] h-6 px-2 rounded-full text-xs font-semibold ${
+                      cat.count > 0
+                        ? "bg-stone-100 text-stone-700"
+                        : "bg-stone-50 text-stone-400"
+                    }`}>
+                      {cat.count}
+                    </span>
+                  </td>
                   <td className="py-4 px-6 text-left">
                     <div className="flex items-center justify-end gap-4 text-xs font-semibold">
                       <button
@@ -113,7 +125,7 @@ export default function CategoriesPage() {
 
               {categories.length === 0 && (
                 <tr>
-                  <td colSpan={3} className="py-12 text-center text-stone-400 text-xs">
+                  <td colSpan={4} className="py-12 text-center text-stone-400 text-xs">
                     لا توجد أصناف حالياً
                   </td>
                 </tr>
