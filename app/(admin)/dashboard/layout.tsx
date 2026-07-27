@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/app/context/providers/auth-provider";
+import { useData } from "@/app/context/providers/data-provider";
 
 export default function DashboardLayout({
   children,
@@ -11,6 +12,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const { user } = useAuth();
+  const { save, edited } = useData();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -54,11 +56,12 @@ export default function DashboardLayout({
           {/* Actions */}
           <div className="flex items-center gap-4">
             <button
-              onClick={() => {
-                // Firebase push logic will hook in here later
-                console.log("Saving menu to Firebase...");
-              }}
-              className="bg-stone-900 text-white text-xs font-semibold px-4 py-2 rounded-md hover:bg-stone-800 transition-colors cursor-pointer"
+              onClick={save}
+              className={`text-xs font-semibold px-4 py-2 rounded-md transition-colors cursor-pointer ${
+                edited
+                  ? "bg-stone-900 text-white hover:bg-stone-800"
+                  : "bg-stone-100 text-stone-400"
+              }`}
             >
               حفظ
             </button>

@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { Category } from "@/app/types/category";
-import { MENU } from "@/app/data/menu";
+import { useData } from "@/app/context/providers/data-provider";
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>(MENU.categories);
+  const { categories, addCategory, updateCategory, deleteCategory } = useData();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -24,7 +24,7 @@ export default function CategoriesPage() {
   };
 
   const handleDelete = (id: string) => {
-    setCategories((prev) => prev.filter((c) => c.id !== id));
+    deleteCategory(id);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -32,20 +32,17 @@ export default function CategoriesPage() {
     if (!formData.id.trim() || !formData.title.trim()) return;
 
     if (editingCategory) {
-      setCategories((prev) =>
-        prev.map((c) =>
-          c.id === editingCategory.id
-            ? { ...c, id: formData.id.trim(), title: formData.title.trim() }
-            : c
-        )
-      );
+      updateCategory(editingCategory.id, {
+        id: formData.id.trim(),
+        title: formData.title.trim(),
+      });
     } else {
       const newCat: Category = {
         id: formData.id.trim(),
         title: formData.title.trim(),
         products: [],
       };
-      setCategories((prev) => [...prev, newCat]);
+      addCategory(newCat);
     }
 
     setIsModalOpen(false);

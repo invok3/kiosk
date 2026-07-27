@@ -7,7 +7,7 @@ import { Product } from "@/app/types/product";
 import { useCart } from "@/app/context/providers/cart-context";
 import MenuHeader from "@/app/ui/menu-header";
 import Link from "next/link";
-import { MENU } from "@/app/data/menu";
+import { useData } from "@/app/context/providers/data-provider";
 
 export default function Menu() {
   const [openCategoryId, setOpenCategoryId] = useState<string | null>(null);
@@ -15,6 +15,7 @@ export default function Menu() {
 
   // Consume global cart dispatch
   const { addToCart, totalAmount, itemCount } = useCart();
+  const { categories } = useData();
 
   const handleToggle = (categoryId: string) => {
     setOpenCategoryId((prev) => (prev === categoryId ? null : categoryId));
@@ -35,7 +36,7 @@ export default function Menu() {
     <div className="py-2">
       <h2 className="text-xl font-bold text-coffee-900 mb-4 px-1">القائمة</h2>
 
-      {MENU.categories.map((category) => (
+      {categories.map((category) => (
         <CategoryAccordion
           key={category.id}
           title={category.title}
