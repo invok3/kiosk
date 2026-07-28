@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useState } from "react";
-import { ORDERS } from "@/app/data/orders";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "@/app/lib/firebase";
 import { Order } from "@/app/types/order";
 
 interface OrderContextType {
@@ -11,7 +12,19 @@ interface OrderContextType {
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
 export default function OrderProvider({ children }: { children: ReactNode }) {
-  const [orders] = useState<Order[]>(ORDERS);
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "orders"), (snapshot) => {
+      const result: Order[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Order[];
+      setOrders(result);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <OrderContext.Provider value={{ orders }}>

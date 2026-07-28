@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/app/context/providers/cart-context";
+import { placeOrder } from "@/app/lib/place-order";
 
 type OrderType = "pickup" | "delivery";
 
@@ -39,14 +40,26 @@ export default function OrderPage() {
       // Your WhatsApp phone number in international format without '+' or spaces (e.g., 972... or 970...)
     const SHOP_PHONE_NUMBER = "972595202527";
 
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (!customer.name || !customer.phone) return;
       if (orderType === "delivery" && !customer.address) return;
 
       setIsSubmitting(true);
 
-      // 1. Format order items list
+      // 1. Write order to Firestore
+      await placeOrder({
+        customerName: customer.name,
+        customerPhone: customer.phone,
+        customerAddress: orderType === "delivery" ? customer.address : undefined,
+        customerNotes: customer.notes || undefined,
+        type: orderType,
+        items: cart,
+        total: totalAmount,
+        date: new Date().toISOString(),
+      });
+
+      // 2. Format order items list
       const itemsList = cart
         .map((item) => {
           let line = `• ${item.label} (${item.quantity}x) - ${(item.price * item.quantity).toFixed(2)} ₪`;

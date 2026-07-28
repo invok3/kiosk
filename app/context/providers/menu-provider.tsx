@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
-import { CATEGORIES, PRODUCTS } from "@/app/data/menu";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { db } from "@/app/lib/firebase";
 import { Category } from "@/app/types/category";
 import { Product } from "@/app/types/product";
 
@@ -26,9 +27,29 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export default function MenuProvider({ children }: { children: ReactNode }) {
-  const [categories, setCategories] = useState<Category[]>(CATEGORIES);
-  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [edited, setEdited] = useState(false);
+
+  const categoriesRef = useRef(doc(db, "menu", "categories"));
+  const productsRef = useRef(doc(db, "menu", "products"));
+
+  useEffect(() => {
+    const unsubCategories = onSnapshot(categoriesRef.current, (snap) => {
+      const data = snap.data();
+      if (data?.list) setCategories(data.list as Category[]);
+    });
+
+    const unsubProducts = onSnapshot(productsRef.current, (snap) => {
+      const data = snap.data();
+      if (data?.list) setProducts(data.list as Product[]);
+    });
+
+    return () => {
+      unsubCategories();
+      unsubProducts();
+    };
+  }, []);
 
   const addCategory = useCallback((cat: Category) => {
     setCategories((prev) => [...prev, cat]);
@@ -68,9 +89,11 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
     return products.filter((p) => p.category_id === categoryId);
   }, [products]);
 
-  const save = useCallback(() => {
-    // Firebase push logic will hook in here later
-    console.log("Saving menu to Firebase...", { categories, products });
+  const save = useCallback(async () => {
+    await Promise.all([
+      setDoc(categoriesRef.current, { list: categories }),
+      setDoc(productsRef.current, { list: products }),
+    ]);
     setEdited(false);
   }, [categories, products]);
 
