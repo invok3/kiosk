@@ -10,14 +10,14 @@ import Link from "next/link";
 import { useData } from "@/app/context/providers/menu-provider";
 
 export default function Menu() {
-  const [openCategoryId, setOpenCategoryId] = useState<string | null>(null);
+  const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // Consume global cart dispatch
   const { addToCart, totalAmount, itemCount } = useCart();
-  const { categories } = useData();
+  const { categories, productsByCategory } = useData();
 
-  const handleToggle = (categoryId: string) => {
+  const handleToggle = (categoryId: number) => {
     setOpenCategoryId((prev) => (prev === categoryId ? null : categoryId));
   };
 
@@ -39,8 +39,8 @@ export default function Menu() {
       {categories.map((category) => (
         <CategoryAccordion
           key={category.id}
-          title={category.title}
-          products={category.products}
+          title={category.label}
+          products={productsByCategory(category.id)}
           isOpen={openCategoryId === category.id}
           onToggle={() => handleToggle(category.id)}
           onProductSelect={handleProductSelect}

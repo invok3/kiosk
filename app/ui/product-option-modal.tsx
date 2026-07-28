@@ -94,7 +94,7 @@ export default function ProductOptionModal({
         <div className="flex justify-between items-start pb-4 border-b border-coffee-500/20">
           <div>
             <h3 className="text-xl font-bold text-coffee-900 leading-tight">
-              {product.name}
+              {product.label}
             </h3>
             <p className="text-base font-bold text-coffee-500 mt-1">
               {product.price.toFixed(2)} ₪

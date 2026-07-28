@@ -13,7 +13,7 @@ export default function ProductTile({ product, onClick }: ProductTileProps) {
     >
       <div>
         <h4 className="font-semibold text-coffee-900 text-base">
-          {product.name}
+          {product.label}
         </h4>
       </div>
       <span className="font-bold text-coffee-800 text-sm">

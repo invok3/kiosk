@@ -1,24 +1,24 @@
 "use client";
 
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
-import { MENU } from "@/app/data/menu";
+import { CATEGORIES, PRODUCTS } from "@/app/data/menu";
 import { Category } from "@/app/types/category";
 import { Product } from "@/app/types/product";
 
 export interface ProductWithCategory extends Product {
-  categoryId: string;
-  categoryTitle: string;
+  categoryLabel: string;
 }
 
 interface DataContextType {
   categories: Category[];
   addCategory(cat: Category): void;
-  updateCategory(id: string, updates: Partial<Category>): void;
-  deleteCategory(id: string): void;
+  updateCategory(id: number, updates: Partial<Category>): void;
+  deleteCategory(id: number): void;
   products: ProductWithCategory[];
-  addProduct(product: Omit<Product, "id"> & { id?: string }, categoryId: string): void;
-  updateProduct(productId: string, updates: Partial<Product>, categoryId: string): void;
-  deleteProduct(productId: string, categoryId: string): void;
+  addProduct(product: Product): void;
+  updateProduct(productId: number, updates: Partial<Product>): void;
+  deleteProduct(productId: number): void;
+  productsByCategory(categoryId: number): Product[];
   edited: boolean;
   save(): void;
 }
@@ -26,7 +26,8 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export default function MenuProvider({ children }: { children: ReactNode }) {
-  const [categories, setCategories] = useState<Category[]>(MENU.categories);
+  const [categories, setCategories] = useState<Category[]>(CATEGORIES);
+  const [products, setProducts] = useState<Product[]>(PRODUCTS);
   const [edited, setEdited] = useState(false);
 
   const addCategory = useCallback((cat: Category) => {
@@ -34,58 +35,44 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
     setEdited(true);
   }, []);
 
-  const updateCategory = useCallback((id: string, updates: Partial<Category>) => {
+  const updateCategory = useCallback((id: number, updates: Partial<Category>) => {
     setCategories((prev) =>
       prev.map((c) => (c.id === id ? { ...c, ...updates } : c))
     );
     setEdited(true);
   }, []);
 
-  const deleteCategory = useCallback((id: string) => {
+  const deleteCategory = useCallback((id: number) => {
     setCategories((prev) => prev.filter((c) => c.id !== id));
     setEdited(true);
   }, []);
 
-  const addProduct = useCallback((product: Omit<Product, "id"> & { id?: string }, categoryId: string) => {
-    const id = product.id ?? Math.random().toString(36).slice(2, 10);
-    setCategories((prev) =>
-      prev.map((c) =>
-        c.id === categoryId
-          ? { ...c, products: [...c.products, { ...product, id }] }
-          : c
-      )
+  const addProduct = useCallback((product: Product) => {
+    setProducts((prev) => [...prev, product]);
+    setEdited(true);
+  }, []);
+
+  const updateProduct = useCallback((productId: number, updates: Partial<Product>) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === productId ? { ...p, ...updates } : p))
     );
     setEdited(true);
   }, []);
 
-  const updateProduct = useCallback((productId: string, updates: Partial<Product>, categoryId: string) => {
-    setCategories((prev) =>
-      prev.map((c) =>
-        c.id === categoryId
-          ? {
-              ...c,
-              products: c.products.map((p) => (p.id === productId ? { ...p, ...updates } : p)),
-            }
-          : c
-      )
-    );
+  const deleteProduct = useCallback((productId: number) => {
+    setProducts((prev) => prev.filter((p) => p.id !== productId));
     setEdited(true);
   }, []);
 
-  const deleteProduct = useCallback((productId: string, categoryId: string) => {
-    setCategories((prev) =>
-      prev.map((c) =>
-        c.id === categoryId ? { ...c, products: c.products.filter((p) => p.id !== productId) } : c
-      )
-    );
-    setEdited(true);
-  }, []);
+  const productsByCategory = useCallback((categoryId: number) => {
+    return products.filter((p) => p.category_id === categoryId);
+  }, [products]);
 
   const save = useCallback(() => {
     // Firebase push logic will hook in here later
-    console.log("Saving menu to Firebase...", { categories });
+    console.log("Saving menu to Firebase...", { categories, products });
     setEdited(false);
-  }, [categories]);
+  }, [categories, products]);
 
   const value = useMemo(
     () => ({
@@ -93,16 +80,18 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
       addCategory,
       updateCategory,
       deleteCategory,
-      products: categories.flatMap((c) =>
-        c.products.map((p) => ({ ...p, categoryId: c.id, categoryTitle: c.title }))
-      ),
+      products: products.map((p) => {
+        const cat = categories.find((c) => c.id === p.category_id);
+        return { ...p, categoryLabel: cat?.label ?? "" };
+      }),
       addProduct,
       updateProduct,
       deleteProduct,
+      productsByCategory,
       edited,
       save,
     }),
-    [categories, addCategory, updateCategory, deleteCategory, addProduct, updateProduct, deleteProduct, edited, save]
+    [categories, products, addCategory, updateCategory, deleteCategory, addProduct, updateProduct, deleteProduct, productsByCategory, edited, save]
   );
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

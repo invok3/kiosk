@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 
-const basePath = process.env.NODE_ENV === 'production' ? '/coffee_end_prototype' : '';
+// const basePath = process.env.NODE_ENV === 'production' ? '/coffee_end_prototype' : '';
 
 export default function Home() {
   return (
@@ -16,7 +16,8 @@ export default function Home() {
         <div className="px-4 flex justify-center items-center">
           <div className="relative w-full aspect-square max-h-[50vh] max-w-[50vh] flex items-center justify-center">
             <Image
-              src={`${basePath}/coffee.png`}
+              // src={`${basePath}/coffee.png`}
+              src="/coffee.png"
               alt="كويك ستوب - Quick Stop"
               sizes="512"
               fill

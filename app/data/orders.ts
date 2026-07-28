@@ -8,8 +8,8 @@ export const ORDERS: Order[] = [
     type: "delivery",
     customerAddress: "رام الله، شارع الإخلاص",
     items: [
-      { id: "1-a", name: "إسبريسو", price: 15, quantity: 2, total: 30, options: [{ id: "milk_type", name: "حليب شوفان", extraPrice: 3 }] },
-      { id: "2-a", name: "كابتشينو", price: 16, quantity: 1, total: 16 },
+      { id: 1, label: "إسبريسو", name: "espresso", price: 15, quantity: 2, total: 30, options: [{ id: "milk_type", name: "حليب شوفان", extraPrice: 3 }] },
+      { id: 3, label: "كابتشينو", name: "cappuccino", price: 16, quantity: 1, total: 16 },
     ],
     total: 46,
     date: "2026-07-27T09:15:00",
@@ -20,7 +20,7 @@ export const ORDERS: Order[] = [
     customerPhone: "0597654321",
     type: "pickup",
     items: [
-      { id: "3-a", name: "لاتيه", price: 18, quantity: 1, total: 18, note: "بدون سكر" },
+      { id: 2, label: "لاتيه", name: "latte", price: 18, quantity: 1, total: 18, note: "بدون سكر" },
     ],
     total: 18,
     date: "2026-07-27T10:30:00",
@@ -32,8 +32,8 @@ export const ORDERS: Order[] = [
     type: "delivery",
     customerAddress: "بيت لحم، شارع المهد",
     items: [
-      { id: "4-a", name: "آيس لاتيه", price: 20, quantity: 3, total: 60 },
-      { id: "5-a", name: "كولد برو", price: 22, quantity: 1, total: 22 },
+      { id: 5, label: "آيس لاتيه", name: "iced-latte", price: 20, quantity: 3, total: 60 },
+      { id: 7, label: "كولد برو", name: "cold-brew", price: 22, quantity: 1, total: 22 },
     ],
     total: 82,
     date: "2026-07-26T14:00:00",
@@ -44,7 +44,7 @@ export const ORDERS: Order[] = [
     customerPhone: "0591112233",
     type: "pickup",
     items: [
-      { id: "6-a", name: "أمريكانو", price: 14, quantity: 2, total: 28, options: [{ id: "extra_shot", name: "جرعة إضافية (Extra Shot)", extraPrice: 4 }] },
+      { id: 4, label: "أمريكانو", name: "americano", price: 14, quantity: 2, total: 28, options: [{ id: "extra_shot", name: "جرعة إضافية (Extra Shot)", extraPrice: 4 }] },
     ],
     total: 36,
     date: "2026-07-25T08:45:00",
@@ -57,8 +57,8 @@ export const ORDERS: Order[] = [
     customerAddress: "نابلس، شارع رأس العين",
     customerNotes: "الاتصال عند الوصول",
     items: [
-      { id: "7-a", name: "موهيتو ليمون ونعناع", price: 17, quantity: 2, total: 34 },
-      { id: "8-a", name: "آيس أمريكانو", price: 15, quantity: 1, total: 15 },
+      { id: 8, label: "موهيتو ليمون ونعناع", name: "mojito-lemon-mint", price: 17, quantity: 2, total: 34 },
+      { id: 6, label: "آيس أمريكانو", name: "iced-americano", price: 15, quantity: 1, total: 15 },
     ],
     total: 49,
     date: "2026-07-24T16:20:00",
@@ -69,7 +69,7 @@ export const ORDERS: Order[] = [
     customerPhone: "0597778899",
     type: "pickup",
     items: [
-      { id: "9-a", name: "إسبريسو", price: 12, quantity: 4, total: 48 },
+      { id: 1, label: "إسبريسو", name: "espresso", price: 12, quantity: 4, total: 48 },
     ],
     total: 48,
     date: "2026-07-23T11:00:00",
@@ -81,8 +81,8 @@ export const ORDERS: Order[] = [
     type: "delivery",
     customerAddress: "القدس، باب الخليل",
     items: [
-      { id: "10-a", name: "كابتشينو", price: 16, quantity: 1, total: 16, options: [{ id: "extra_hot", name: "ساخن جداً", extraPrice: 0 }] },
-      { id: "11-a", name: "كولد برو", price: 22, quantity: 1, total: 22, note: "ثلج كثير" },
+      { id: 3, label: "كابتشينو", name: "cappuccino", price: 16, quantity: 1, total: 16, options: [{ id: "extra_hot", name: "ساخن جداً", extraPrice: 0 }] },
+      { id: 7, label: "كولد برو", name: "cold-brew", price: 22, quantity: 1, total: 22, note: "ثلج كثير" },
     ],
     total: 38,
     date: "2026-07-22T13:10:00",
@@ -93,7 +93,7 @@ export const ORDERS: Order[] = [
     customerPhone: "0596667788",
     type: "pickup",
     items: [
-      { id: "12-a", name: "لاتيه", price: 18, quantity: 2, total: 36, options: [{ id: "milk_type", name: "حليب لوز", extraPrice: 3 }] },
+      { id: 2, label: "لاتيه", name: "latte", price: 18, quantity: 2, total: 36, options: [{ id: "milk_type", name: "حليب لوز", extraPrice: 3 }] },
     ],
     total: 42,
     date: "2026-07-20T09:30:00",
@@ -105,8 +105,8 @@ export const ORDERS: Order[] = [
     type: "delivery",
     customerAddress: "البيرة، شارع النور",
     items: [
-      { id: "13-a", name: "آيس لاتيه", price: 20, quantity: 1, total: 20 },
-      { id: "14-a", name: "أمريكانو", price: 14, quantity: 2, total: 28 },
+      { id: 5, label: "آيس لاتيه", name: "iced-latte", price: 20, quantity: 1, total: 20 },
+      { id: 4, label: "أمريكانو", name: "americano", price: 14, quantity: 2, total: 28 },
     ],
     total: 48,
     date: "2026-07-18T15:45:00",
@@ -117,7 +117,7 @@ export const ORDERS: Order[] = [
     customerPhone: "0598889900",
     type: "pickup",
     items: [
-      { id: "15-a", name: "موهيتو ليمون ونعناع", price: 17, quantity: 3, total: 51 },
+      { id: 8, label: "موهيتو ليمون ونعناع", name: "mojito-lemon-mint", price: 17, quantity: 3, total: 51 },
     ],
     total: 51,
     date: "2026-07-15T12:00:00",
@@ -129,9 +129,9 @@ export const ORDERS: Order[] = [
     type: "delivery",
     customerAddress: "جنين، شارع الشهداء",
     items: [
-      { id: "16-a", name: "إسبريسو", price: 12, quantity: 1, total: 12 },
-      { id: "17-a", name: "كابتشينو", price: 16, quantity: 1, total: 16 },
-      { id: "18-a", name: "آيس أمريكانو", price: 15, quantity: 1, total: 15 },
+      { id: 1, label: "إسبريسو", name: "espresso", price: 12, quantity: 1, total: 12 },
+      { id: 3, label: "كابتشينو", name: "cappuccino", price: 16, quantity: 1, total: 16 },
+      { id: 6, label: "آيس أمريكانو", name: "iced-americano", price: 15, quantity: 1, total: 15 },
     ],
     total: 43,
     date: "2026-07-10T10:15:00",
@@ -142,7 +142,7 @@ export const ORDERS: Order[] = [
     customerPhone: "0594443322",
     type: "pickup",
     items: [
-      { id: "19-a", name: "كولد برو", price: 22, quantity: 2, total: 44 },
+      { id: 7, label: "كولد برو", name: "cold-brew", price: 22, quantity: 2, total: 44 },
     ],
     total: 44,
     date: "2026-06-28T14:30:00",
@@ -155,8 +155,8 @@ export const ORDERS: Order[] = [
     customerAddress: "قلقيلية، شارع شهداء",
     customerNotes: "بدون ثلج",
     items: [
-      { id: "20-a", name: "لاتيه", price: 18, quantity: 1, total: 18, options: [{ id: "milk_type", name: "حليب شوفان", extraPrice: 3 }] },
-      { id: "21-a", name: "آيس لاتيه", price: 20, quantity: 1, total: 20 },
+      { id: 2, label: "لاتيه", name: "latte", price: 18, quantity: 1, total: 18, options: [{ id: "milk_type", name: "حليب شوفان", extraPrice: 3 }] },
+      { id: 5, label: "آيس لاتيه", name: "iced-latte", price: 20, quantity: 1, total: 20 },
     ],
     total: 41,
     date: "2026-06-20T08:00:00",
@@ -167,7 +167,7 @@ export const ORDERS: Order[] = [
     customerPhone: "0597776655",
     type: "pickup",
     items: [
-      { id: "22-a", name: "أمريكانو", price: 14, quantity: 3, total: 42, options: [{ id: "extra_shot", name: "جرعة إضافية (Extra Shot)", extraPrice: 4 }] },
+      { id: 4, label: "أمريكانو", name: "americano", price: 14, quantity: 3, total: 42, options: [{ id: "extra_shot", name: "جرعة إضافية (Extra Shot)", extraPrice: 4 }] },
     ],
     total: 54,
     date: "2026-06-15T11:45:00",
@@ -179,8 +179,8 @@ export const ORDERS: Order[] = [
     type: "delivery",
     customerAddress: "الظاهرية، شارع المدارس",
     items: [
-      { id: "23-a", name: "موهيتو ليمون ونعناع", price: 17, quantity: 1, total: 17 },
-      { id: "24-a", name: "إسبريسو", price: 12, quantity: 2, total: 24, options: [{ id: "milk_type", name: "حليب لوز", extraPrice: 3 }] },
+      { id: 8, label: "موهيتو ليمون ونعناع", name: "mojito-lemon-mint", price: 17, quantity: 1, total: 17 },
+      { id: 1, label: "إسبريسو", name: "espresso", price: 12, quantity: 2, total: 24, options: [{ id: "milk_type", name: "حليب لوز", extraPrice: 3 }] },
     ],
     total: 47,
     date: "2026-06-01T09:20:00",
@@ -191,7 +191,7 @@ export const ORDERS: Order[] = [
     customerPhone: "0591234567",
     type: "pickup",
     items: [
-      { id: "25-a", name: "كابتشينو", price: 16, quantity: 2, total: 32 },
+      { id: 3, label: "كابتشينو", name: "cappuccino", price: 16, quantity: 2, total: 32 },
     ],
     total: 32,
     date: "2026-05-25T16:00:00",
@@ -203,8 +203,8 @@ export const ORDERS: Order[] = [
     type: "delivery",
     customerAddress: "بيرة زيتا، شارع الجنان",
     items: [
-      { id: "26-a", name: "آيس لاتيه", price: 20, quantity: 2, total: 40 },
-      { id: "27-a", name: "كولد برو", price: 22, quantity: 1, total: 22, note: "حليب شوفان" },
+      { id: 5, label: "آيس لاتيه", name: "iced-latte", price: 20, quantity: 2, total: 40 },
+      { id: 7, label: "كولد برو", name: "cold-brew", price: 22, quantity: 1, total: 22, note: "حليب شوفان" },
     ],
     total: 62,
     date: "2026-05-10T13:30:00",
@@ -215,7 +215,7 @@ export const ORDERS: Order[] = [
     customerPhone: "0594445566",
     type: "pickup",
     items: [
-      { id: "28-a", name: "آيس أمريكانو", price: 15, quantity: 1, total: 15 },
+      { id: 6, label: "آيس أمريكانو", name: "iced-americano", price: 15, quantity: 1, total: 15 },
     ],
     total: 15,
     date: "2026-04-18T10:00:00",

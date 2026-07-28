@@ -4,7 +4,7 @@ import { Suspense, useState, useMemo } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Product } from "@/app/types/product";
 import { ProductOption, OptionChoice } from "@/app/types/option";
-import { useData } from "@/app/context/providers/menu-provider";
+import { useData, ProductWithCategory } from "@/app/context/providers/menu-provider";
 import { useSearchFilter } from "@/app/hooks/use-search-filter";
 import AdminSearchBar from "@/app/ui/admin-search-bar";
 
@@ -19,7 +19,7 @@ function ProductsContent() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const categoryFilter = searchParams.get("categoryid") ?? "";
+  const categoryFilter = Number(searchParams.get("categoryid")) || 0;
 
   const handleCategoryChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -32,50 +32,50 @@ function ProductsContent() {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<(Product & { categoryId: string }) | null>(null);
+  const [editingProduct, setEditingProduct] = useState<ProductWithCategory | null>(null);
   const [formData, setFormData] = useState({
-    id: "",
+    label: "",
     name: "",
     price: "",
-    categoryId: "",
+    category_id: 0,
   });
   const [options, setOptions] = useState<ProductOption[]>([]);
 
   const handleOpenAdd = () => {
     setEditingProduct(null);
-    setFormData({ id: "", name: "", price: "", categoryId: categories[0]?.id ?? "" });
+    setFormData({ label: "", name: "", price: "", category_id: categories[0]?.id ?? 0 });
     setOptions([]);
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (product: Product & { categoryId: string }) => {
+  const handleOpenEdit = (product: ProductWithCategory) => {
     setEditingProduct(product);
     setFormData({
-      id: product.id,
+      label: product.label,
       name: product.name,
       price: String(product.price),
-      categoryId: product.categoryId,
+      category_id: product.category_id,
     });
     setOptions(product.options ? structuredClone(product.options) : []);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (product: Product & { categoryId: string }) => {
-    deleteProduct(product.id, product.categoryId);
+  const handleDelete = (product: ProductWithCategory) => {
+    deleteProduct(product.id);
   };
 
   const filteredProducts = useMemo(() => {
     let result = products;
     if (categoryFilter) {
-      result = result.filter((p) => p.categoryId === categoryFilter);
+      result = result.filter((p) => p.category_id === categoryFilter);
     }
     if (filterValue) {
       const term = filterValue.toLowerCase();
       result = result.filter(
         (p) =>
+          p.label.toLowerCase().includes(term) ||
           p.name.toLowerCase().includes(term) ||
-          p.id.toLowerCase().includes(term) ||
-          p.categoryTitle.toLowerCase().includes(term),
+          p.categoryLabel.toLowerCase().includes(term),
       );
     }
     return result;
@@ -153,7 +153,7 @@ function ProductsContent() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.price.trim() || !formData.categoryId) return;
+    if (!formData.label.trim() || !formData.name.trim() || !formData.price.trim()) return;
 
     const priceNum = parseFloat(formData.price);
     if (isNaN(priceNum)) return;
@@ -162,19 +162,24 @@ function ProductsContent() {
 
     if (editingProduct) {
       updateProduct(editingProduct.id, {
-        id: formData.id.trim() || editingProduct.id,
+        label: formData.label.trim(),
         name: formData.name.trim(),
         price: priceNum,
+        category_id: formData.category_id,
         options: cleanOptions,
-      }, editingProduct.categoryId);
+      });
     } else {
-      const newProduct: Omit<Product, "id"> & { id?: string } = {
-        id: formData.id.trim() || undefined,
+      const nextId = products.length > 0 ? Math.max(...products.map((p) => p.id)) + 1 : 1;
+      const newProduct: Product = {
+        id: nextId,
+        category_id: formData.category_id,
+        label: formData.label.trim(),
         name: formData.name.trim(),
         price: priceNum,
         options: cleanOptions,
+        available: true,
       };
-      addProduct(newProduct, formData.categoryId);
+      addProduct(newProduct);
     }
 
     setIsModalOpen(false);
@@ -187,13 +192,13 @@ function ProductsContent() {
         <div className="flex items-center gap-3">
           <AdminSearchBar value={searchInput} onChange={setSearchInput} />
           <select
-            value={categoryFilter}
+            value={categoryFilter || ""}
             onChange={(e) => handleCategoryChange(e.target.value)}
             className="bg-white border border-stone-200 rounded-md px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-stone-900 transition-colors"
           >
             <option value="">الكل</option>
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>{cat.title}</option>
+              <option key={cat.id} value={cat.id}>{cat.label}</option>
             ))}
           </select>
         </div>
@@ -213,8 +218,8 @@ function ProductsContent() {
           <table className="w-full text-right text-sm border-collapse">
             <thead className="sticky top-0 bg-stone-50 border-b border-stone-200 z-10">
               <tr className="text-stone-500 text-xs font-medium">
-                <th className="py-3 px-6">المسمى</th>
-                <th className="py-3 px-6">الاسم البرمجي (ID)</th>
+                <th className="py-3 px-6">المسمى (Label)</th>
+                <th className="py-3 px-6">الاسم البرمجي (Name)</th>
                 <th className="py-3 px-6">السعر</th>
                 <th className="py-3 px-6">التصنيف</th>
                 <th className="py-3 px-6">خيارات</th>
@@ -223,11 +228,11 @@ function ProductsContent() {
             </thead>
             <tbody className="divide-y divide-stone-100">
               {filteredProducts.map((product) => (
-                <tr key={`${product.categoryId}-${product.id}`} className="hover:bg-stone-50/50 transition-colors">
-                  <td className="py-4 px-6 font-semibold text-stone-900">{product.name}</td>
-                  <td className="py-4 px-6 text-stone-500 font-mono text-xs">{product.id}</td>
+                <tr key={product.id} className="hover:bg-stone-50/50 transition-colors">
+                  <td className="py-4 px-6 font-semibold text-stone-900">{product.label}</td>
+                  <td className="py-4 px-6 text-stone-500 font-mono text-xs">{product.name}</td>
                   <td className="py-4 px-6 text-stone-700">{product.price} ₪</td>
-                  <td className="py-4 px-6 text-stone-600">{product.categoryTitle}</td>
+                  <td className="py-4 px-6 text-stone-600">{product.categoryLabel}</td>
                   <td className="py-4 px-6">
                     <span className={`inline-flex items-center justify-center min-w-[1.5rem] h-6 px-2 rounded-full text-xs font-semibold ${
                       product.options && product.options.length > 0
@@ -282,27 +287,28 @@ function ProductsContent() {
               <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
                 <div>
                   <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                    المسمى (Name)
+                    المسمى (Label)
                   </label>
                   <input
                     type="text"
                     required
                     placeholder="مثال: إسبريسو"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    value={formData.label}
+                    onChange={(e) => setFormData({ ...formData, label: e.target.value })}
                     className="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-stone-900 transition-colors"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                    الاسم البرمجي (ID)
+                    الاسم البرمجي (Name)
                   </label>
                   <input
                     type="text"
+                    required
                     placeholder="مثال: espresso"
-                    value={formData.id}
-                    onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm text-stone-900 font-mono focus:outline-none focus:border-stone-900 transition-colors"
                   />
                 </div>
@@ -329,13 +335,13 @@ function ProductsContent() {
                   </label>
                   <select
                     required
-                    value={formData.categoryId}
-                    onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                    value={formData.category_id}
+                    onChange={(e) => setFormData({ ...formData, category_id: Number(e.target.value) })}
                     className="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-stone-900 transition-colors"
                   >
-                    <option value="" disabled>اختر تصنيفاً</option>
+                    <option value={0} disabled>اختر تصنيفاً</option>
                     {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>{cat.title}</option>
+                      <option key={cat.id} value={cat.id}>{cat.label}</option>
                     ))}
                   </select>
                 </div>

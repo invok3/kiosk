@@ -6,7 +6,7 @@ import { CartProduct } from "@/app/types/product";
 interface CartContextType {
   cart: CartProduct[];
   addToCart: (item: CartProduct) => void;
-  removeFromCart: (itemId: string) => void;
+  removeFromCart: (itemId: number) => void;
   clearCart: () => void;
   itemCount: number;
   totalAmount: number;
@@ -23,7 +23,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   // Remove a specific item by its unique cart ID
-  const removeFromCart = (itemId: string) => {
+  const removeFromCart = (itemId: number) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
   };
 

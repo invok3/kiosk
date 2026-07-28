@@ -65,7 +65,7 @@ export default function CartPage() {
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <h3 className="font-bold text-coffee-900 text-base">
-                                            {item.name}
+                                            {item.label}
                                         </h3>
                                         <span className="text-xs text-coffee-800/70 font-semibold">
                                             الكمية: {item.quantity}

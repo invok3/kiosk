@@ -1,14 +1,18 @@
 import { OptionChoice, ProductOption } from "./option";
 
 export interface Product {
-    id: string;
+    id: number;
+    category_id: number;
+    label: string;
     name: string;
     price: number;
     options?: ProductOption[];
+    available: boolean;
 }
 
 export interface CartProduct {
-    id: string;
+    id: number;
+    label: string;
     name: string;
     price: number;
     quantity: number;
@@ -40,7 +44,8 @@ export function cartProductFrom(params: CreateCartProductParams): CartProduct {
   const total = unitPrice * quantity;
 
   return {
-    id: `${product.id}-${Date.now()}`,
+    id: product.id,
+    label:product.label,
     name: product.name,
     price: unitPrice,
     quantity,

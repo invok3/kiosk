@@ -1,7 +1,6 @@
-import { Product } from "./product";
-
 export interface Category {
-  id: string;
-  title: string;
-  products: Product[];
+  id: number;
+  name: string;
+  label: string;
+  available: boolean;
 }
