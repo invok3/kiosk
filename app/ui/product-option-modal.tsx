@@ -23,7 +23,7 @@ export default function ProductOptionModal({
     const initialRadios: Record<string, OptionChoice> = {};
     
     product.options.forEach((optGroup) => {
-      if (optGroup.type === "radio" && optGroup.choices?.length > 0) {
+      if (optGroup.type === "radio" && optGroup.choices && optGroup.choices?.length > 0) {
         initialRadios[optGroup.id] = optGroup.choices[0];
       }
     });
@@ -62,7 +62,7 @@ export default function ProductOptionModal({
       } else {
         copy[optGroup.id] = {
           id: optGroup.id,
-          name: optGroup.title,
+          name: optGroup.name,
           extraPrice: optGroup.extraPrice ?? 0,
         };
       }
@@ -138,7 +138,7 @@ export default function ProductOptionModal({
                   return (
                     <div key={optGroup.id} className="space-y-2">
                       <label className="block text-sm font-bold text-coffee-900">
-                        {optGroup.title}
+                        {optGroup.name}
                       </label>
                       <div className="space-y-1.5">
                         {optGroup.choices?.map((choice) => {
@@ -195,7 +195,7 @@ export default function ProductOptionModal({
                         >
                           {isChecked && "✓"}
                         </span>
-                        <span>{optGroup.title}</span>
+                        <span>{optGroup.name}</span>
                       </div>
                       <span className="text-xs font-bold text-coffee-500">
                         {optGroup.extraPrice > 0
