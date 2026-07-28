@@ -15,6 +15,7 @@ export const MENU = {
               id: "milk_type",
               name: "نوع الحليب",
               type: "radio",
+              extraPrice:0,
               required: true,
               choices: [
                 { id: "whole_milk", name: "حليب كامل الدسم", extraPrice: 0 },

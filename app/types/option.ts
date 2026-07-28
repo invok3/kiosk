@@ -8,7 +8,7 @@ export interface ProductOption {
   id: string;
   name: string;
   type: "checkbox" | "radio";
-  extraPrice?: number;
+  extraPrice: number;
   required?: boolean;
   choices?: OptionChoice[];
 }
