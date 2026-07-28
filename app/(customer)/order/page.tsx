@@ -49,7 +49,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       // 1. Format order items list
       const itemsList = cart
         .map((item) => {
-          let line = `• ${item.name} (${item.quantity}x) - ${(item.price * item.quantity).toFixed(2)} ₪`;
+          let line = `• ${item.label} (${item.quantity}x) - ${(item.price * item.quantity).toFixed(2)} ₪`;
           if (item.options && item.options.length > 0) {
             const optionsList = item.options
               .map((opt) => {

@@ -75,7 +75,7 @@ export default function DashboardPage() {
           {summary.topProduct ? (
             <div className="flex items-baseline justify-between mb-3">
               <div>
-                <span className="text-lg font-bold text-stone-900">{summary.topProduct.name}</span>
+                <span className="text-lg font-bold text-stone-900">{summary.topProduct.label}</span>
                 <span className="text-xs text-stone-400 mr-2">({summary.topProduct.quantity} مبيعة)</span>
               </div>
               <span className="text-sm font-semibold text-stone-700">{summary.topProduct.revenue.toFixed(2)} ₪</span>

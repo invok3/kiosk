@@ -18,7 +18,7 @@ export function getUniqueCustomerCount(orders: Order[]): number {
 }
 
 export interface ProductStat {
-  name: string;
+  label: string;
   quantity: number;
   revenue: number;
 }
@@ -27,12 +27,12 @@ export function getProductSales(orders: Order[]): ProductStat[] {
   const map = new Map<string, ProductStat>();
   for (const order of orders) {
     for (const item of order.items) {
-      const existing = map.get(item.name);
+      const existing = map.get(item.label);
       if (existing) {
         existing.quantity += item.quantity;
         existing.revenue += item.total;
       } else {
-        map.set(item.name, { name: item.name, quantity: item.quantity, revenue: item.total });
+        map.set(item.label, { label: item.label, quantity: item.quantity, revenue: item.total });
       }
     }
   }
