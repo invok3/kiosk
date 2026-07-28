@@ -16,8 +16,7 @@ export default function Home() {
         <div className="px-4 flex justify-center items-center">
           <div className="relative w-full aspect-square max-h-[50vh] max-w-[50vh] flex items-center justify-center">
             <Image
-              // src={`${basePath}/coffee.png`}
-              src="coffee.png"
+              src={`${basePath}/coffee.png`}
               alt="كويك ستوب - Quick Stop"
               sizes="512"
               fill
