@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Fragment } from "react";
+import { Suspense, useState, useMemo, Fragment } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Order } from "@/app/types/order";
 import { useOrders } from "@/app/context/providers/order-provider";
@@ -68,7 +68,7 @@ function matchTimeFilter(order: Order, filter: TimeFilter, from?: string, to?: s
   }
 }
 
-export default function OrdersPage() {
+function OrdersContent() {
   const { orders } = useOrders();
   const { searchInput, setSearchInput, filterValue } = useSearchFilter();
   const searchParams = useSearchParams();
@@ -401,5 +401,13 @@ export default function OrdersPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function OrdersPage() {
+  return (
+    <Suspense fallback={null}>
+      <OrdersContent />
+    </Suspense>
   );
 }

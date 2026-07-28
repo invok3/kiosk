@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { Suspense, useState, useMemo } from "react";
 import { Category } from "@/app/types/category";
 import { useData } from "@/app/context/providers/menu-provider";
 import { useSearchFilter } from "@/app/hooks/use-search-filter";
 import AdminSearchBar from "@/app/ui/admin-search-bar";
 
-export default function CategoriesPage() {
+function CategoriesContent() {
   const { categories, addCategory, updateCategory, deleteCategory } = useData();
   const { searchInput, setSearchInput, filterValue } = useSearchFilter();
 
@@ -193,5 +193,13 @@ export default function CategoriesPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function CategoriesPage() {
+  return (
+    <Suspense fallback={null}>
+      <CategoriesContent />
+    </Suspense>
   );
 }

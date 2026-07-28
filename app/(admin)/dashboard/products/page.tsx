@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { Suspense, useState, useMemo } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Product } from "@/app/types/product";
 import { ProductOption, OptionChoice } from "@/app/types/option";
@@ -12,7 +12,7 @@ function shortId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-export default function ProductsPage() {
+function ProductsContent() {
   const { categories, products, addProduct, updateProduct, deleteProduct } = useData();
   const { searchInput, setSearchInput, filterValue } = useSearchFilter();
   const searchParams = useSearchParams();
@@ -505,5 +505,13 @@ export default function ProductsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={null}>
+      <ProductsContent />
+    </Suspense>
   );
 }
