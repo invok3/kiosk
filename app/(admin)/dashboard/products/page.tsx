@@ -38,14 +38,14 @@ function ProductsContent() {
     label: "",
     name: "",
     price: "",
-    category_id: 0,
+    category_id: categoryFilter ?? 0,
     available: true,
   });
   const [options, setOptions] = useState<ProductOption[]>([]);
 
   const handleOpenAdd = () => {
     setEditingProduct(null);
-    setFormData({ label: "", name: "", price: "", category_id: categories[0]?.id ?? 0, available: true });
+    setFormData({ label: "", name: "", price: "", category_id: categoryFilter ?? 0, available: true });
     setOptions([]);
     setIsModalOpen(true);
   };
