@@ -99,7 +99,7 @@ export default function ProductsPage() {
         const next = { ...o, ...updates };
         // Switching to radio: initialize 2 default choices, clear option cost
         if (updates.type === "radio" && o.type !== "radio") {
-          next.extraPrice = undefined;
+          next.extraPrice = 0;
           next.required = false;
           next.choices = [
             { id: shortId(), name: "", extraPrice: 0 },

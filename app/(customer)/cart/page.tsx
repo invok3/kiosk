@@ -85,7 +85,7 @@ export default function CartPage() {
                                 {item.options && item.options.length > 0 && (
                                     <div className="text-xs text-coffee-900/70 space-y-1 bg-coffee-800/5 p-2.5 rounded-xl">
                                         {item.options.map((opt, idx) => (
-                                            <p key={idx}>• {opt.name || opt.title}</p>
+                                            <p key={idx}>• {opt.name || opt.name}</p>
                                         ))}
                                     </div>
                                 )}
@@ -93,7 +93,7 @@ export default function CartPage() {
                                 {/* Notes */}
                                 {item.note && (
                                     <p className="text-xs italic text-coffee-900/60">
-                                        ملاحظة: "{item.note}"
+                                        ملاحظة: `&rdquo;`{item.note}`&rdquo;`
                                     </p>
                                 )}
 
