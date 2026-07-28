@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Product } from "@/app/types/product";
 import { ProductOption, OptionChoice } from "@/app/types/option";
-import { useData } from "@/app/context/providers/data-provider";
+import { useData } from "@/app/context/providers/menu-provider";
 import { useSearchFilter } from "@/app/hooks/use-search-filter";
 import AdminSearchBar from "@/app/ui/admin-search-bar";
 

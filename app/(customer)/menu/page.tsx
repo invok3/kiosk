@@ -7,7 +7,7 @@ import { Product } from "@/app/types/product";
 import { useCart } from "@/app/context/providers/cart-context";
 import MenuHeader from "@/app/ui/menu-header";
 import Link from "next/link";
-import { useData } from "@/app/context/providers/data-provider";
+import { useData } from "@/app/context/providers/menu-provider";
 
 export default function Menu() {
   const [openCategoryId, setOpenCategoryId] = useState<string | null>(null);

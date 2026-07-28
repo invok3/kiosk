@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/app/context/providers/auth-provider";
-import { useData } from "@/app/context/providers/data-provider";
+import { useData } from "@/app/context/providers/menu-provider";
 
 export default function DashboardLayout({
   children,

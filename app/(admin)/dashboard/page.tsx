@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { ORDERS } from "@/app/data/orders";
+import { useOrders } from "@/app/context/providers/order-provider";
 import { getDashboardSummary } from "@/app/utils/reports";
 
 function GrowthIndicator({ value }: { value: number }) {
@@ -37,7 +37,8 @@ function formatMonth(key: string): string {
 }
 
 export default function DashboardPage() {
-  const summary = useMemo(() => getDashboardSummary(ORDERS), []);
+  const { orders } = useOrders();
+  const summary = useMemo(() => getDashboardSummary(orders), [orders]);
 
   const statCards = [
     { label: "الطلبات", value: summary.totalOrders, growth: summary.ordersGrowth },

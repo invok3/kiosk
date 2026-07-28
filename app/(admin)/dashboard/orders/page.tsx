@@ -3,7 +3,7 @@
 import { useState, useMemo, Fragment } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Order } from "@/app/types/order";
-import { ORDERS } from "@/app/data/orders";
+import { useOrders } from "@/app/context/providers/order-provider";
 import { useSearchFilter } from "@/app/hooks/use-search-filter";
 import AdminSearchBar from "@/app/ui/admin-search-bar";
 
@@ -69,6 +69,7 @@ function matchTimeFilter(order: Order, filter: TimeFilter, from?: string, to?: s
 }
 
 export default function OrdersPage() {
+  const { orders } = useOrders();
   const { searchInput, setSearchInput, filterValue } = useSearchFilter();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -132,7 +133,7 @@ export default function OrdersPage() {
   };
 
   const filteredOrders = useMemo(() => {
-    let result = ORDERS;
+    let result = orders;
 
     if (filterValue) {
       const term = filterValue.toLowerCase();
@@ -151,7 +152,7 @@ export default function OrdersPage() {
     }
 
     return result;
-  }, [filterValue, timeFilter, typeFilter, dateFrom, dateTo]);
+  }, [orders, filterValue, timeFilter, typeFilter, dateFrom, dateTo]);
 
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / PAGE_SIZE));
   const safePage = Math.min(currentPage, totalPages);

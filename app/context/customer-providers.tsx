@@ -2,11 +2,11 @@
 
 import { Composer } from "@/app/context/composer";
 import { CartProvider } from "@/app/context/providers/cart-context";
-import DataProvider from "@/app/context/providers/data-provider";
+import MenuProvider from "@/app/context/providers/menu-provider";
 
 const providers = [
+  MenuProvider,
   CartProvider,
-  DataProvider,
 ];
 
 export function CustomerProviders({ children }: { children: React.ReactNode }) {

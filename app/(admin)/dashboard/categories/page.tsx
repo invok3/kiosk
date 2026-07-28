@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Category } from "@/app/types/category";
-import { useData } from "@/app/context/providers/data-provider";
+import { useData } from "@/app/context/providers/menu-provider";
 import { useSearchFilter } from "@/app/hooks/use-search-filter";
 import AdminSearchBar from "@/app/ui/admin-search-bar";
 

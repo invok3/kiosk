@@ -2,12 +2,14 @@
 
 import { Composer } from "@/app/context/composer";
 import AuthProvider from "@/app/context/providers/auth-provider";
-import DataProvider from "@/app/context/providers/data-provider";
+import MenuProvider from "@/app/context/providers/menu-provider";
+import OrderProvider from "@/app/context/providers/order-provider";
 
 
 const providers = [
   AuthProvider,
-  DataProvider,
+  MenuProvider,
+  OrderProvider,
 ];
 
 export function DashboardProviders({ children }: { children: React.ReactNode }) {

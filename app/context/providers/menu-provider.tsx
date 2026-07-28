@@ -25,7 +25,7 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-export default function DataProvider({ children }: { children: ReactNode }) {
+export default function MenuProvider({ children }: { children: ReactNode }) {
   const [categories, setCategories] = useState<Category[]>(MENU.categories);
   const [edited, setEdited] = useState(false);
 
@@ -111,7 +111,7 @@ export default function DataProvider({ children }: { children: ReactNode }) {
 export function useData() {
   const context = useContext(DataContext);
   if (!context) {
-    throw new Error("useData must be used within a DataProvider");
+    throw new Error("useData must be used within a MenuProvider");
   }
   return context;
 }
