@@ -6,8 +6,8 @@ export interface Order {
   id: string;
   customerName: string;
   customerPhone: string;
-  customerAddress?: string;
-  customerNotes?: string;
+  customerAddress: string;
+  customerNotes: string;
   type: OrderType;
   items: CartProduct[];
   total: number;

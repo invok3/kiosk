@@ -19,7 +19,8 @@ function ProductsContent() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const categoryFilter = Number(searchParams.get("categoryid")) || 0;
+  const categoryFilterParam = searchParams.get("categoryid");
+  const categoryFilter = categoryFilterParam !== null ? Number(categoryFilterParam) : null;
 
   const handleCategoryChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -68,7 +69,7 @@ function ProductsContent() {
 
   const filteredProducts = useMemo(() => {
     let result = products;
-    if (categoryFilter) {
+    if (categoryFilter !== null) {
       result = result.filter((p) => p.category_id === categoryFilter);
     }
     if (filterValue) {
@@ -86,7 +87,7 @@ function ProductsContent() {
   const handleAddOption = () => {
     setOptions((prev) => [
       ...prev,
-      { id: shortId(), name: "", type: "checkbox", extraPrice: 0 },
+      { id: shortId(), name: "", type: "checkbox", extraPrice: 0, required: false, choices: [] },
     ]);
   };
 
@@ -110,7 +111,7 @@ function ProductsContent() {
         }
         // Switching to checkbox: clear choices
         if (updates.type === "checkbox" && o.type !== "checkbox") {
-          next.choices = undefined;
+          next.choices = [];
           next.extraPrice = next.extraPrice ?? 0;
         }
         return next;
@@ -160,7 +161,7 @@ function ProductsContent() {
     const priceNum = parseFloat(formData.price);
     if (isNaN(priceNum)) return;
 
-    const cleanOptions = options.length > 0 ? options : undefined;
+    const cleanOptions = options.length > 0 ? options : [];
 
     if (editingProduct) {
       updateProduct(editingProduct.id, {
@@ -195,7 +196,7 @@ function ProductsContent() {
         <div className="flex items-center gap-3">
           <AdminSearchBar value={searchInput} onChange={setSearchInput} />
           <select
-            value={categoryFilter || ""}
+            value={categoryFilterParam ?? ""}
             onChange={(e) => handleCategoryChange(e.target.value)}
             className="bg-white border border-stone-200 rounded-md px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-stone-900 transition-colors"
           >
@@ -351,7 +352,7 @@ function ProductsContent() {
                     onChange={(e) => setFormData({ ...formData, category_id: Number(e.target.value) })}
                     className="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm text-stone-900 focus:outline-none focus:border-stone-900 transition-colors"
                   >
-                    <option value={0} disabled>اختر تصنيفاً</option>
+                    <option value="" disabled hidden>اختر تصنيفاً</option>
                     {categories.map((cat) => (
                       <option key={cat.id} value={cat.id}>{cat.label}</option>
                     ))}

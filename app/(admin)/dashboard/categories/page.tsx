@@ -51,7 +51,7 @@ function CategoriesContent() {
         available: formData.available,
       });
     } else {
-      const nextId = categories.length > 0 ? Math.max(...categories.map((c) => c.id)) + 1 : 0;
+            const nextId = categories.length > 0 ? Math.max(...categories.map((c) => c.id)) + 1 : 0;
       const newCat: Category = {
         id: nextId,
         name: formData.name.trim(),

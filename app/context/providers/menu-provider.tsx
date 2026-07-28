@@ -36,6 +36,7 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsubCategories = onSnapshot(categoriesRef.current, (snap) => {
+      console.log("fetching categories...");
       const data = snap.data();
       if (data?.list) setCategories(data.list as Category[]);
     });

@@ -51,8 +51,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       await placeOrder({
         customerName: customer.name,
         customerPhone: customer.phone,
-        customerAddress: orderType === "delivery" ? customer.address : undefined,
-        customerNotes: customer.notes || undefined,
+        customerAddress: orderType === "delivery" ? customer.address : "",
+        customerNotes: customer.notes || "",
         type: orderType,
         items: cart,
         total: totalAmount,

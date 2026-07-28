@@ -9,6 +9,6 @@ export interface ProductOption {
   name: string;
   type: "checkbox" | "radio";
   extraPrice: number;
-  required?: boolean;
-  choices?: OptionChoice[];
+  required: boolean;
+  choices: OptionChoice[];
 }
