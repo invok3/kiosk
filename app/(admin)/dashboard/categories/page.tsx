@@ -12,7 +12,7 @@ function CategoriesContent() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [formData, setFormData] = useState({ name: "", label: "" });
+  const [formData, setFormData] = useState({ name: "", label: "", available: true });
 
   const filteredCategories = useMemo(() => {
     if (!filterValue) return categories;
@@ -26,13 +26,13 @@ function CategoriesContent() {
 
   const handleOpenAdd = () => {
     setEditingCategory(null);
-    setFormData({ name: "", label: "" });
+    setFormData({ name: "", label: "", available: true });
     setIsModalOpen(true);
   };
 
   const handleOpenEdit = (cat: Category) => {
     setEditingCategory(cat);
-    setFormData({ name: cat.name, label: cat.label });
+    setFormData({ name: cat.name, label: cat.label, available: cat.available });
     setIsModalOpen(true);
   };
 
@@ -48,6 +48,7 @@ function CategoriesContent() {
       updateCategory(editingCategory.id, {
         name: formData.name.trim(),
         label: formData.label.trim(),
+        available: formData.available,
       });
     } else {
       const nextId = categories.length > 0 ? Math.max(...categories.map((c) => c.id)) + 1 : 0;
@@ -87,6 +88,7 @@ function CategoriesContent() {
                 <th className="py-3 px-6">المسمى (Label)</th>
                 <th className="py-3 px-6">الاسم البرمجي (Name)</th>
                 <th className="py-3 px-6 text-center">المنتجات</th>
+                <th className="py-3 px-6 text-center">متوفر</th>
                 <th className="py-3 px-6 text-left">الإجراءات</th>
               </tr>
             </thead>
@@ -105,6 +107,14 @@ function CategoriesContent() {
                     }`}>
                       {count}
                     </span>
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <input
+                      type="checkbox"
+                      checked={cat.available}
+                      onChange={() => updateCategory(cat.id, { available: !cat.available })}
+                      className="h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900 cursor-pointer accent-stone-700"
+                    />
                   </td>
                   <td className="py-4 px-6 text-left">
                     <div className="flex items-center justify-end gap-4 text-xs font-semibold">
@@ -128,7 +138,7 @@ function CategoriesContent() {
 
               {filteredCategories.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-12 text-center text-stone-400 text-xs">
+                  <td colSpan={5} className="py-12 text-center text-stone-400 text-xs">
                     لا توجد أصناف حالياً
                   </td>
                 </tr>
@@ -175,6 +185,19 @@ function CategoriesContent() {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full bg-stone-50 border border-stone-200 rounded-md px-3 py-2 text-sm text-stone-900 font-mono focus:outline-none focus:border-stone-900 transition-colors"
                 />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="available"
+                  checked={formData.available}
+                  onChange={(e) => setFormData({ ...formData, available: e.target.checked })}
+                  className="h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900 cursor-pointer"
+                />
+                <label htmlFor="available" className="text-xs font-semibold text-stone-700">
+                  متوفر للعملاء
+                </label>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-stone-100">

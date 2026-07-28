@@ -324,7 +324,7 @@ function OrdersContent() {
                                 <tbody className="divide-y divide-stone-50">
                                   {order.items.map((item) => (
                                     <tr key={item.id}>
-                                      <td className="py-2 px-4 font-semibold text-stone-900">{item.name}</td>
+                                      <td className="py-2 px-4 font-semibold text-stone-900">{item.label}</td>
                                       <td className="py-2 px-4 text-stone-600">{item.quantity}x</td>
                                       <td className="py-2 px-6 text-stone-600">{item.price.toFixed(2)} ₪</td>
                                       <td className="py-2 px-4 font-semibold text-stone-900">{item.total.toFixed(2)} ₪</td>

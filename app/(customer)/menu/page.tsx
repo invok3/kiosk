@@ -36,11 +36,11 @@ export default function Menu() {
     <div className="py-2">
       <h2 className="text-xl font-bold text-coffee-900 mb-4 px-1">القائمة</h2>
 
-      {categories.map((category) => (
+      {categories.filter((cat) => cat.available).map((category) => (
         <CategoryAccordion
           key={category.id}
           title={category.label}
-          products={productsByCategory(category.id)}
+          products={productsByCategory(category.id).filter((p) => p.available)}
           isOpen={openCategoryId === category.id}
           onToggle={() => handleToggle(category.id)}
           onProductSelect={handleProductSelect}

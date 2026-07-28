@@ -38,12 +38,13 @@ function ProductsContent() {
     name: "",
     price: "",
     category_id: 0,
+    available: true,
   });
   const [options, setOptions] = useState<ProductOption[]>([]);
 
   const handleOpenAdd = () => {
     setEditingProduct(null);
-    setFormData({ label: "", name: "", price: "", category_id: categories[0]?.id ?? 0 });
+    setFormData({ label: "", name: "", price: "", category_id: categories[0]?.id ?? 0, available: true });
     setOptions([]);
     setIsModalOpen(true);
   };
@@ -55,6 +56,7 @@ function ProductsContent() {
       name: product.name,
       price: String(product.price),
       category_id: product.category_id,
+      available: product.available,
     });
     setOptions(product.options ? structuredClone(product.options) : []);
     setIsModalOpen(true);
@@ -167,6 +169,7 @@ function ProductsContent() {
         price: priceNum,
         category_id: formData.category_id,
         options: cleanOptions,
+        available: formData.available,
       });
     } else {
       const nextId = products.length > 0 ? Math.max(...products.map((p) => p.id)) + 1 : 1;
@@ -223,6 +226,7 @@ function ProductsContent() {
                 <th className="py-3 px-6">السعر</th>
                 <th className="py-3 px-6">التصنيف</th>
                 <th className="py-3 px-6">خيارات</th>
+                <th className="py-3 px-6 text-center">متوفر</th>
                 <th className="py-3 px-6 text-left">الإجراءات</th>
               </tr>
             </thead>
@@ -241,6 +245,14 @@ function ProductsContent() {
                     }`}>
                       {product.options ? product.options.length : 0}
                     </span>
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <input
+                      type="checkbox"
+                      checked={product.available}
+                      onChange={() => updateProduct(product.id, { available: !product.available })}
+                      className="h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900 cursor-pointer accent-stone-700"
+                    />
                   </td>
                   <td className="py-4 px-6 text-left">
                     <div className="flex items-center justify-end gap-4 text-xs font-semibold">
@@ -263,7 +275,7 @@ function ProductsContent() {
 
               {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-stone-400 text-xs">
+                  <td colSpan={7} className="py-12 text-center text-stone-400 text-xs">
                     لا توجد منتجات حالياً
                   </td>
                 </tr>
@@ -344,6 +356,19 @@ function ProductsContent() {
                       <option key={cat.id} value={cat.id}>{cat.label}</option>
                     ))}
                   </select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="product-available"
+                    checked={formData.available}
+                    onChange={(e) => setFormData({ ...formData, available: e.target.checked })}
+                    className="h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-900 cursor-pointer"
+                  />
+                  <label htmlFor="product-available" className="text-xs font-semibold text-stone-700">
+                    متوفر للعملاء
+                  </label>
                 </div>
 
                 {/* Options Section */}

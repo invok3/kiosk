@@ -14,6 +14,12 @@ export const CATEGORIES = [
     label: "مشروبات باردة",
     available: true,
   },
+  {
+    id: 2,
+    name: "ice-cream",
+    label: "بوظة",
+    available: false,
+  },
 ] satisfies Category[];
 
 export const PRODUCTS = [
