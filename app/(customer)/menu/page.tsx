@@ -15,7 +15,7 @@ export default function Menu() {
 
   // Consume global cart dispatch
   const { addToCart, totalAmount, itemCount } = useCart();
-  const { categories, productsByCategory } = useData();
+  const { categories, productsByCategory, dataReady } = useData();
 
   const handleToggle = (categoryId: number) => {
     setOpenCategoryId((prev) => (prev === categoryId ? null : categoryId));
@@ -33,6 +33,11 @@ export default function Menu() {
     
             <main className="flex-1 overflow-y-auto my-2">
 
+              {!dataReady ? (
+                <div className="h-full flex items-center justify-center">
+                  <h2 className="animate-pulse text-coffee-500 text-lg font-bold">الرجاء الإنتظار...</h2>
+                </div>
+              ) : (
     <div className="py-2">
       <h2 className="text-xl font-bold text-coffee-900 mb-4 px-1">القائمة</h2>
 
@@ -56,6 +61,7 @@ export default function Menu() {
         />
       )}
     </div>
+              )}
     </main>
 
         <div className="w-full flex justify-center">

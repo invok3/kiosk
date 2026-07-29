@@ -22,6 +22,7 @@ interface DataContextType {
   deleteProduct(productId: number): void;
   productsByCategory(categoryId: number): Product[];
   edited: boolean;
+  dataReady: boolean;
   save(): void;
 }
 
@@ -31,6 +32,8 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [edited, setEdited] = useState(false);
+  const [dataReady, setDataReady] = useState(false);
+  const onSnapshotCount = useRef(0);
 
   const categoriesRef = useRef(doc(db, "menu", "categories"));
   const productsRef = useRef(doc(db, "menu", "products"));
@@ -44,12 +47,16 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
       console.log("fetching categories...");
       const data = snap.data();
       if (data?.list) setCategories(data.list as Category[]);
+      onSnapshotCount.current += 1;
+      if (onSnapshotCount.current >= 2) setDataReady(true);
     });
 
     const unsubProducts = onSnapshot(productsRef.current, (snap) => {
       console.log("fetching products...");
       const data = snap.data();
       if (data?.list) setProducts(data.list as Product[]);
+      onSnapshotCount.current += 1;
+      if (onSnapshotCount.current >= 2) setDataReady(true);
     });
 
     return () => {
@@ -119,9 +126,10 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
       deleteProduct,
       productsByCategory,
       edited,
+      dataReady,
       save,
     }),
-    [categories, products, addCategory, updateCategory, deleteCategory, addProduct, updateProduct, deleteProduct, productsByCategory, edited, save]
+    [categories, products, addCategory, updateCategory, deleteCategory, addProduct, updateProduct, deleteProduct, productsByCategory, edited, dataReady, save]
   );
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
