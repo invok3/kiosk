@@ -40,7 +40,7 @@ function CategoriesContent() {
     deleteCategory(id);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.label.trim()) return;
 

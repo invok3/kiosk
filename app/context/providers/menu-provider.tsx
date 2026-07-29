@@ -44,7 +44,6 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!shouldFetch) return;
     const unsubCategories = onSnapshot(categoriesRef.current, (snap) => {
-      console.log("fetching categories...");
       const data = snap.data();
       if (data?.list) setCategories(data.list as Category[]);
       onSnapshotCount.current += 1;
@@ -52,7 +51,6 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
     });
 
     const unsubProducts = onSnapshot(productsRef.current, (snap) => {
-      console.log("fetching products...");
       const data = snap.data();
       if (data?.list) setProducts(data.list as Product[]);
       onSnapshotCount.current += 1;

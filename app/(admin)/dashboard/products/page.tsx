@@ -153,7 +153,7 @@ function ProductsContent() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     if (!formData.label.trim() || !formData.name.trim() || !formData.price.trim()) return;
 

@@ -20,7 +20,6 @@ export default function OrderProvider({ children }: { children: ReactNode }) {
     if (!user) return;
 
     const unsubscribe = onSnapshot(collection(db, "orders"), (snapshot) => {
-      console.log("fetching orders...");
       const result: Order[] = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
