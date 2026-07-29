@@ -11,19 +11,19 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { user } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const { save, edited } = useData();
   const router = useRouter();
   const pathname = usePathname();
 
   // Redirect to login if user is unauthenticated
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       router.replace("/login");
     }
-  }, [user, router]);
+  }, [user, loading, router]);
 
-  if (!user) {
+  if (loading || !user) {
     return null;
   }
 
@@ -66,11 +66,8 @@ export default function DashboardLayout({
               حفظ
             </button>
             <button
-              onClick={() => {
-                // Firebase signOut logic will hook in here later
-                console.log("Signing out...");
-              }}
-              className="text-xs font-semibold text-stone-500 hover:text-stone-900 transition-colors"
+              onClick={signOut}
+              className="text-xs font-semibold text-stone-500 hover:text-stone-900 transition-colors cursor-pointer"
             >
               تسجيل الخروج
             </button>

@@ -1,15 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/app/context/providers/auth-provider";
 
 export default function LoginPage() {
+  const { signIn } = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("تسجيل الدخول باستخدام:", { email, password });
+    setError("");
+    setSubmitting(true);
+    const result = await signIn(email, password);
+    setSubmitting(false);
+    if (result.error) {
+      setError(result.error);
+    } else {
+      router.replace("/dashboard");
+    }
   };
 
   return (
@@ -62,11 +76,18 @@ export default function LoginPage() {
             />
           </div>
 
+          {error && (
+            <div className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5">
+              "Invalid Username or Password!"
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full py-3 px-4 bg-stone-900 hover:bg-stone-800 text-white font-medium text-sm rounded-lg shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] mt-2"
+            disabled={submitting}
+            className="w-full py-3 px-4 bg-stone-900 hover:bg-stone-800 disabled:bg-stone-400 text-white font-medium text-sm rounded-lg shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] mt-2 cursor-pointer disabled:cursor-not-allowed"
           >
-            تسجيل الدخول
+            {submitting ? "جارٍ تسجيل الدخول..." : "تسجيل الدخول"}
           </button>
         </form>
 
