@@ -30,13 +30,22 @@ export default function ProductOptionModal({
     return initialRadios;
   });
 
-  const [selectedCheckboxes, setSelectedCheckboxes] = useState<Record<string, OptionChoice>>({});
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState<Record<string, { parentOn: boolean; children: Record<string, OptionChoice> }>>({});
 
   const flatSelectedOptions: OptionChoice[] = useMemo(() => {
     const radioList = Object.values(selectedRadios);
-    const checkboxList = Object.values(selectedCheckboxes);
+    const checkboxList: OptionChoice[] = [];
+    Object.entries(selectedCheckboxes).forEach(([groupId, sel]) => {
+      if (sel.parentOn) {
+        const optGroup = product?.options?.find((o) => o.id === groupId);
+        if (optGroup) {
+          checkboxList.push({ id: optGroup.id, name: optGroup.name, extraPrice: optGroup.extraPrice ?? 0 });
+        }
+      }
+      Object.values(sel.children).forEach((child) => checkboxList.push(child));
+    });
     return [...radioList, ...checkboxList];
-  }, [selectedRadios, selectedCheckboxes]);
+  }, [selectedRadios, selectedCheckboxes, product?.options]);
 
   if (!product) return null;
 
@@ -54,17 +63,28 @@ export default function ProductOptionModal({
     }));
   };
 
-  const handleCheckboxToggle = (optGroup: ProductOption) => {
+  const handleCheckboxParentToggle = (optGroup: ProductOption) => {
     setSelectedCheckboxes((prev) => {
       const copy = { ...prev };
-      if (copy[optGroup.id]) {
+      if (copy[optGroup.id]?.parentOn) {
         delete copy[optGroup.id];
       } else {
-        copy[optGroup.id] = {
-          id: optGroup.id,
-          name: optGroup.name,
-          extraPrice: optGroup.extraPrice ?? 0,
-        };
+        copy[optGroup.id] = { parentOn: true, children: {} };
+      }
+      return copy;
+    });
+  };
+
+  const handleCheckboxChildToggle = (optGroup: ProductOption, choice: OptionChoice) => {
+    setSelectedCheckboxes((prev) => {
+      const copy = { ...prev };
+      const group = copy[optGroup.id] ?? { parentOn: false, children: {} };
+      if (group.children[choice.id]) {
+        const childrenCopy = { ...group.children };
+        delete childrenCopy[choice.id];
+        copy[optGroup.id] = { ...group, children: childrenCopy };
+      } else {
+        copy[optGroup.id] = { ...group, children: { ...group.children, [choice.id]: choice } };
       }
       return copy;
     });
@@ -170,39 +190,80 @@ export default function ProductOptionModal({
                   );
                 }
 
-                // 2. Checkbox Group (Boolean / Toggle Option)
+                // 2. Checkbox Group (Toggle Option with optional children)
                 if (optGroup.type === "checkbox") {
-                  const isChecked = Boolean(selectedCheckboxes[optGroup.id]);
+                  const hasChoices = (optGroup.choices?.length ?? 0) > 0;
+                  const sel = selectedCheckboxes[optGroup.id];
+                  const parentOn = sel?.parentOn ?? false;
 
                   return (
-                    <button
-                      key={optGroup.id}
-                      type="button"
-                      onClick={() => handleCheckboxToggle(optGroup)}
-                      className={`w-full flex justify-between items-center p-3 rounded-xl border text-sm font-medium transition-all cursor-pointer ${
-                        isChecked
-                          ? "border-coffee-800 bg-cream-200 text-coffee-900 font-bold"
-                          : "border-coffee-500/20 bg-white text-coffee-900 hover:bg-cream-200/50"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span
-                          className={`w-5 h-5 rounded-md border flex items-center justify-center text-xs transition-colors ${
-                            isChecked
-                              ? "bg-coffee-800 border-coffee-800 text-cream-100 font-bold"
-                              : "border-coffee-500/40 bg-white"
-                          }`}
-                        >
-                          {isChecked && "✓"}
+                    <div key={optGroup.id} className="space-y-2">
+                      <button
+                        type="button"
+                        onClick={() => handleCheckboxParentToggle(optGroup)}
+                        className={`w-full flex justify-between items-center p-3 rounded-xl border text-sm font-medium transition-all cursor-pointer ${
+                          parentOn
+                            ? "border-coffee-800 bg-cream-200 text-coffee-900 font-bold"
+                            : "border-coffee-500/20 bg-white text-coffee-900 hover:bg-cream-200/50"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <span
+                            className={`w-5 h-5 rounded-md border flex items-center justify-center text-xs transition-colors ${
+                              parentOn
+                                ? "bg-coffee-800 border-coffee-800 text-cream-100 font-bold"
+                                : "border-coffee-500/40 bg-white"
+                            }`}
+                          >
+                            {parentOn && "✓"}
+                          </span>
+                          <span>{optGroup.name}</span>
+                        </div>
+                        <span className="text-xs font-bold text-coffee-500">
+                          {optGroup.extraPrice > 0
+                            ? `+${optGroup.extraPrice.toFixed(2)} ₪`
+                            : "-"}
                         </span>
-                        <span>{optGroup.name}</span>
-                      </div>
-                      <span className="text-xs font-bold text-coffee-500">
-                        {optGroup.extraPrice > 0
-                          ? `+${optGroup.extraPrice.toFixed(2)} ₪`
-                          : "-"}
-                      </span>
-                    </button>
+                      </button>
+
+                      {parentOn && hasChoices && (
+                        <div className="mr-6 space-y-1.5">
+                          {optGroup.choices?.map((choice) => {
+                            const childOn = Boolean(sel?.children[choice.id]);
+                            return (
+                              <button
+                                key={choice.id}
+                                type="button"
+                                onClick={() => handleCheckboxChildToggle(optGroup, choice)}
+                                className={`w-full flex justify-between items-center p-2.5 rounded-xl border text-sm font-medium transition-all cursor-pointer ${
+                                  childOn
+                                    ? "border-coffee-800 bg-cream-200 text-coffee-900 font-bold"
+                                    : "border-coffee-500/20 bg-white text-coffee-900 hover:bg-cream-200/50"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2.5">
+                                  <span
+                                    className={`w-4 h-4 rounded border flex items-center justify-center text-[10px] transition-colors ${
+                                      childOn
+                                        ? "bg-coffee-800 border-coffee-800 text-cream-100 font-bold"
+                                        : "border-coffee-500/40 bg-white"
+                                    }`}
+                                  >
+                                    {childOn && "✓"}
+                                  </span>
+                                  <span>{choice.name}</span>
+                                </div>
+                                <span className="text-xs font-bold text-coffee-500">
+                                  {choice.extraPrice > 0
+                                    ? `+${choice.extraPrice.toFixed(2)} ₪`
+                                    : "-"}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   );
                 }
 

@@ -17,15 +17,15 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   // Redirect to login if user is unauthenticated
-  // useEffect(() => {
-  //   if (!user) {
-  //     router.replace("/login");
-  //   }
-  // }, [user, router]);
+  useEffect(() => {
+    if (!user) {
+      router.replace("/login");
+    }
+  }, [user, router]);
 
-  // if (!user) {
-  //   return null;
-  // }
+  if (!user) {
+    return null;
+  }
 
   const navItems = [
     { label: "الرئيسية", href: "/dashboard" },

@@ -1,6 +1,7 @@
 "use client";
 
 
+import { User } from "firebase/auth";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 
@@ -32,6 +33,3 @@ export function useAuth() {
     }
     return context;
 }
-
-
-interface User {};

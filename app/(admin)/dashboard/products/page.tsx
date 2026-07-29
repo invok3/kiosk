@@ -87,7 +87,7 @@ function ProductsContent() {
   const handleAddOption = () => {
     setOptions((prev) => [
       ...prev,
-      { id: shortId(), name: "", type: "checkbox", extraPrice: 0, required: false, choices: [] },
+      { id: shortId(), name: "", type: "checkbox", extraPrice: 0, choices: [] },
     ]);
   };
 
@@ -103,7 +103,6 @@ function ProductsContent() {
         // Switching to radio: initialize 2 default choices, clear option cost
         if (updates.type === "radio" && o.type !== "radio") {
           next.extraPrice = 0;
-          next.required = false;
           next.choices = [
             { id: shortId(), name: "", extraPrice: 0 },
             { id: shortId(), name: "", extraPrice: 0 },
@@ -415,7 +414,7 @@ function ProductsContent() {
                                     : "bg-white text-stone-500 border border-stone-200 hover:text-stone-900"
                                 }`}
                               >
-                                فردي
+                                إختياري
                               </button>
                               <button
                                 type="button"
@@ -426,7 +425,7 @@ function ProductsContent() {
                                     : "bg-white text-stone-500 border border-stone-200 hover:text-stone-900"
                                 }`}
                               >
-                                متعدد
+                                إلزامي
                               </button>
                             </div>
                           </div>
@@ -440,33 +439,67 @@ function ProductsContent() {
                           </button>
                         </div>
 
-                        {/* Checkbox: Cost input */}
+                        {/* Checkbox: Cost input + Choices */}
                         {opt.type === "checkbox" && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-stone-500">التكلفة</span>
-                            <input
-                              type="number"
-                              min="0"
-                              step="0.5"
-                              value={opt.extraPrice ?? 0}
-                              onChange={(e) => handleOptionChange(opt.id, { extraPrice: Math.max(0, parseFloat(e.target.value) || 0) })}
-                              className="bg-white border border-stone-200 rounded-md px-2.5 py-1.5 text-xs text-stone-900 font-mono w-20 focus:outline-none focus:border-stone-900 transition-colors"
-                            />
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-stone-500">التكلفة</span>
+                              <input
+                                type="number"
+                                min="0"
+                                step="0.5"
+                                value={opt.extraPrice ?? 0}
+                                onChange={(e) => handleOptionChange(opt.id, { extraPrice: Math.max(0, parseFloat(e.target.value) || 0) })}
+                                className="bg-white border border-stone-200 rounded-md px-2.5 py-1.5 text-xs text-stone-900 font-mono w-20 focus:outline-none focus:border-stone-900 transition-colors"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              {(opt.choices ?? []).map((choice, idx) => (
+                                <div key={choice.id} className="flex items-center gap-2">
+                                  <span className="text-xs text-stone-400 w-4 text-center">{idx + 1}</span>
+                                  <input
+                                    type="text"
+                                    required
+                                    placeholder="اسم الخيار الفرعي"
+                                    value={choice.name}
+                                    onChange={(e) => handleChoiceChange(opt.id, choice.id, { name: e.target.value })}
+                                    className="flex-1 bg-white border border-stone-200 rounded-md px-2.5 py-1.5 text-xs text-stone-900 focus:outline-none focus:border-stone-900 transition-colors"
+                                  />
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    step="0.5"
+                                    value={choice.extraPrice}
+                                    onChange={(e) => handleChoiceChange(opt.id, choice.id, { extraPrice: Math.max(0, parseFloat(e.target.value) || 0) })}
+                                    className="w-20 bg-white border border-stone-200 rounded-md px-2 py-1.5 text-xs text-stone-900 font-mono focus:outline-none focus:border-stone-900 transition-colors"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveChoice(opt.id, choice.id)}
+                                    disabled={(opt.choices?.length ?? 0) <= 1}
+                                    className="text-stone-300 hover:text-stone-900 text-xs leading-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                                    title="حذف"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => handleAddChoice(opt.id)}
+                              className="text-xs font-semibold text-stone-400 hover:text-stone-900 underline underline-offset-4 cursor-pointer"
+                            >
+                              + إضافة خيار فرعي
+                            </button>
                           </div>
                         )}
 
-                        {/* Radio: Required toggle + Choices */}
+                        {/* Radio: Choices */}
                         {opt.type === "radio" && (
                           <div className="space-y-3">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={opt.required ?? false}
-                                onChange={(e) => handleOptionChange(opt.id, { required: e.target.checked })}
-                                className="w-3.5 h-3.5 rounded border-stone-300 text-stone-900 focus:ring-stone-900 accent-stone-900"
-                              />
-                              <span className="text-xs text-stone-700 font-semibold">إلزامي</span>
-                            </label>
 
                             <div className="space-y-2">
                               {(opt.choices ?? []).map((choice, idx) => (
