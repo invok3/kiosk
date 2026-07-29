@@ -4,7 +4,7 @@ import { useState } from "react";
 import CategoryAccordion from "@/app/ui/category-accordion";
 import ProductOptionModal from "@/app/ui/product-option-modal";
 import { Product } from "@/app/types/product";
-import { useCart } from "@/app/context/providers/cart-context";
+import { useCart } from "@/app/context/providers/cart-provider";
 import MenuHeader from "@/app/ui/menu-header";
 import Link from "next/link";
 import { useData } from "@/app/context/providers/menu-provider";
