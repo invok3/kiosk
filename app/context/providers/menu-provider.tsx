@@ -5,6 +5,7 @@ import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
 import { Category } from "@/app/types/category";
 import { Product } from "@/app/types/product";
+import { AuthContext } from "@/app/context/providers/auth-provider";
 
 export interface ProductWithCategory extends Product {
   categoryLabel: string;
@@ -34,7 +35,11 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
   const categoriesRef = useRef(doc(db, "menu", "categories"));
   const productsRef = useRef(doc(db, "menu", "products"));
 
+  const authContext = useContext(AuthContext);
+  const shouldFetch = authContext ? Boolean(authContext.user) : true;
+
   useEffect(() => {
+    if (!shouldFetch) return;
     const unsubCategories = onSnapshot(categoriesRef.current, (snap) => {
       console.log("fetching categories...");
       const data = snap.data();
@@ -42,6 +47,7 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
     });
 
     const unsubProducts = onSnapshot(productsRef.current, (snap) => {
+      console.log("fetching products...");
       const data = snap.data();
       if (data?.list) setProducts(data.list as Product[]);
     });
@@ -50,7 +56,7 @@ export default function MenuProvider({ children }: { children: ReactNode }) {
       unsubCategories();
       unsubProducts();
     };
-  }, []);
+  }, [shouldFetch]);
 
   const addCategory = useCallback((cat: Category) => {
     setCategories((prev) => [...prev, cat]);
