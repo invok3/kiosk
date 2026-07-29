@@ -15,11 +15,6 @@ export default function LoginPage() {
     }
   }, [user, loading, router]);
 
-  if (!loading && user) {
-      return null;
-    }
-
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -37,6 +32,11 @@ export default function LoginPage() {
       router.replace("/dashboard");
     }
   };
+
+
+  if (loading || user) {
+      return null;
+    }
 
   return (
     <div dir="rtl" className="min-h-screen bg-white flex flex-col justify-center items-center p-4">
